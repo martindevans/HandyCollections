@@ -1,0 +1,47 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandyCollections", "HandyCollections\HandyCollections.csproj", "{C18B7765-C1F8-4769-A114-291D0BDB5865}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandyCollectionsTest", "HandyCollectionsTest\HandyCollectionsTest.csproj", "{B3A032F2-4168-4544-8B3C-2146B925E309}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0A768634-F50B-4406-8559-199F514BE340}"
+	ProjectSection(SolutionItems) = preProject
+		HandyCollections.vsmdi = HandyCollections.vsmdi
+		Local.testsettings = Local.testsettings
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(CodealikeProperties) = postSolution
+		SolutionGuid = 6a343836-779d-4eae-b447-3a6dd50a46d2
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = HandyCollections.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C18B7765-C1F8-4769-A114-291D0BDB5865}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C18B7765-C1F8-4769-A114-291D0BDB5865}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C18B7765-C1F8-4769-A114-291D0BDB5865}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C18B7765-C1F8-4769-A114-291D0BDB5865}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3A032F2-4168-4544-8B3C-2146B925E309}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3A032F2-4168-4544-8B3C-2146B925E309}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3A032F2-4168-4544-8B3C-2146B925E309}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3A032F2-4168-4544-8B3C-2146B925E309}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		CodeStyleEnforcer_Active = 0
+		CodeStyleEnforcer_RulesLocation = 
+	EndGlobalSection
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+EndGlobal

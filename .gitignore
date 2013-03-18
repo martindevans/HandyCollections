@@ -1,0 +1,12 @@
+*.suo
+*.user
+*.cachefile
+*.xnb
+*.sln.docstates
+*.cache
+*.pyc
+_Resharper.*
+HandyCollectionsTest/bin
+HandyCollectionsTest/obj
+HandyCollections/bin
+HandyCollections/obj
