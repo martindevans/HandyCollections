@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace HandyCollections
+namespace HandyCollections.RandomNumber
 {
     /// <summary>
     /// A threadsafe static random number generator
@@ -11,7 +8,6 @@ namespace HandyCollections
     public class StaticRandomNumber
     {
         #region random number generation
-        const double REAL_UNIT_INT = 1.0 / ((double)int.MaxValue + 1.0);
         const uint U = 273326509 >> 19;
 
         /// <summary>
@@ -23,7 +19,7 @@ namespace HandyCollections
         public static uint Random(uint seed, uint upperBound)
         {
             uint t = (seed ^ (seed << 11));
-            uint w = 273326509;
+            const uint w = 273326509;
             long i = (int)(0x7FFFFFFF & ((w ^ U) ^ (t ^ (t >> 8))));
             return (uint)(i % upperBound);
         }
@@ -34,21 +30,12 @@ namespace HandyCollections
         /// </summary>
         /// <param name="upperBound">The maximum value (exclusive)</param>
         /// <returns></returns>
-        public unsafe static uint Random(uint upperBound)
+        public unsafe static uint Random(uint upperBound = uint.MaxValue)
         {
             int time = DateTime.Now.Millisecond;
             uint uTime = *((uint*)&time);
 
             return Random(uTime, upperBound);
-        }
-
-        /// <summary>
-        /// Creates a random number, using the time as the seed
-        /// </summary>
-        /// <returns></returns>
-        public unsafe static uint Random()
-        {
-            return Random(uint.MaxValue);
         }
     }
 }

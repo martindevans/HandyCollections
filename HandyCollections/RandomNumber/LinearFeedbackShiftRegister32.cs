@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace HandyCollections.RandomNumber
 {
@@ -14,13 +12,13 @@ namespace HandyCollections.RandomNumber
         /// <summary>
         /// The number of numbers this sequence will go through before repeating
         /// </summary>
-        public const UInt32 PERIOD = UInt32.MaxValue;
+        private const UInt32 PERIOD = UInt32.MaxValue;
 
-        UInt16 repeatThreshold;
-        LinearFeedbackShiftRegister16 mostSignificantBits;
+        readonly UInt16 _repeatThreshold;
+        readonly LinearFeedbackShiftRegister16 _mostSignificantBits;
 
-        UInt16 lsb;
-        LinearFeedbackShiftRegister16 leastSignificantBits;
+        UInt16 _lsb;
+        readonly LinearFeedbackShiftRegister16 _leastSignificantBits;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LinearFeedbackShiftRegister32"/> class.
@@ -28,11 +26,11 @@ namespace HandyCollections.RandomNumber
         /// <param name="seed">The seed to initialise the sequence with</param>
         public LinearFeedbackShiftRegister32(UInt32 seed)
         {
-            mostSignificantBits = new LinearFeedbackShiftRegister16((UInt16)seed);
-            leastSignificantBits = new LinearFeedbackShiftRegister16((UInt16)(seed >> 16));
+            _mostSignificantBits = new LinearFeedbackShiftRegister16((UInt16)seed);
+            _leastSignificantBits = new LinearFeedbackShiftRegister16((UInt16)(seed >> 16));
 
-            repeatThreshold = mostSignificantBits.NextRandom();
-            lsb = leastSignificantBits.NextRandom();
+            _repeatThreshold = _mostSignificantBits.NextRandom();
+            _lsb = _leastSignificantBits.NextRandom();
         }
 
         /// <summary>
@@ -41,12 +39,12 @@ namespace HandyCollections.RandomNumber
         /// <returns></returns>
         public UInt32 NextRandom()
         {
-            UInt16 msb = mostSignificantBits.NextRandom();
+            UInt16 msb = _mostSignificantBits.NextRandom();
 
-            if (msb == repeatThreshold)
-                lsb = leastSignificantBits.NextRandom();
+            if (msb == _repeatThreshold)
+                _lsb = _leastSignificantBits.NextRandom();
 
-            int a = msb << 16 | lsb;
+            int a = msb << 16 | _lsb;
 
             unsafe
             {

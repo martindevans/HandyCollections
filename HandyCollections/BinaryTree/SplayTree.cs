@@ -1,10 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace HandyCollections.BinaryTree
 {
+    /// <summary>
+    /// A binary tree which reorders itself to make more recently accessed items more efficient to access
+    /// </summary>
+    /// <typeparam name="K"></typeparam>
+    /// <typeparam name="V"></typeparam>
     public class SplayTree<K, V>
         :BinaryTree<K, V>
     {
@@ -13,7 +15,7 @@ namespace HandyCollections.BinaryTree
             return Splay(base.Add(key, value));
         }
 
-        public override BinaryTree<K, V>.Node Find(K key)
+        public override Node Find(K key)
         {
             var f = base.Find(key);
 

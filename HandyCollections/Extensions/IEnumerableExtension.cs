@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace HandyCollections.Extensions
 {
@@ -50,10 +48,7 @@ namespace HandyCollections.Extensions
         /// </returns>
         public static bool IsEmpty<T>(this IEnumerable<T> enumerable)
         {
-            foreach (var item in enumerable)
-                return false;
-
-            return true;
+            return !enumerable.Any();
         }
     }
 }

@@ -79,7 +79,7 @@ namespace HandyCollections.Heap
         /// <param name="capacity">The initial capacity of the heap</param>
         public MinMaxMedianHeap(Comparer<T> comparer, int capacity = 0)
         {
-            this._comparer = comparer;
+            _comparer = comparer;
             _lesserOrEqual = new MinMaxHeap<T>(comparer, capacity / 2);
             _greaterOrEqual = new MinMaxHeap<T>(comparer, capacity / 2);
         }
@@ -150,12 +150,7 @@ namespace HandyCollections.Heap
             if (Count == 0)
                 throw new InvalidOperationException("Heap is empty");
 
-            T value;
-
-            if (_greaterOrEqual.Count == 0)
-                value = _lesserOrEqual.RemoveMax();
-            else
-                value = _greaterOrEqual.RemoveMax();
+            T value = _greaterOrEqual.Count == 0 ? _lesserOrEqual.RemoveMax() : _greaterOrEqual.RemoveMax();
 
             Rebalance();
             return value;
@@ -170,12 +165,7 @@ namespace HandyCollections.Heap
             if (Count == 0)
                 throw new InvalidOperationException("Heap is empty");
 
-            T value;
-
-            if (_lesserOrEqual.Count == 0)
-                value = _greaterOrEqual.RemoveMin();
-            else
-                value = _lesserOrEqual.RemoveMin();
+            T value = _lesserOrEqual.Count == 0 ? _greaterOrEqual.RemoveMin() : _lesserOrEqual.RemoveMin();
 
             Rebalance();
             return value;

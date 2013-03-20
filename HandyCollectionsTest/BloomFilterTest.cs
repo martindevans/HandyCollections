@@ -1,4 +1,5 @@
 ﻿using HandyCollections;
+using HandyCollections.BloomFilter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HandyCollectionsTest
@@ -7,7 +8,7 @@ namespace HandyCollectionsTest
     public class BloomFilterTest
     {
         [TestMethod]
-        public void BasicBloomFilter()
+        public void BasicBloomFilterCorrectlyActsAsASet()
         {
             BloomFilter<int> filter = new BloomFilter<int>(100, 2);
 
@@ -26,9 +27,8 @@ namespace HandyCollectionsTest
         }
 
         [TestMethod]
-        public void FalsePostivieRate()
+        public void FalsePostiveRateCrossesThresholdAtCorrectCount()
         {
-            //create a new filter to test false positive rate
             var filter = new BloomFilter<int>(100, 0.1f);
 
             for (int i = 0; i < 99; i++)
@@ -38,6 +38,12 @@ namespace HandyCollectionsTest
             }
 
             Assert.IsFalse(filter.FalsePositiveRate > 0.1f);
+
+            filter.Add(1000);
+            filter.Add(1001);
+            filter.Add(1002);
+
+            Assert.IsTrue(filter.FalsePositiveRate > 0.1f);
         }
 
         [TestMethod]
@@ -49,6 +55,24 @@ namespace HandyCollectionsTest
             Assert.IsTrue(filter.Contains(10));
             Assert.IsTrue(filter.Remove(10));
             Assert.IsFalse(filter.Contains(10));
+        }
+
+        [TestMethod]
+        public void RollbackWhenRemovingANonExistantItem()
+        {
+            CountingBloomFilter_Accessor<int> a = new CountingBloomFilter_Accessor<int>(1000, 0.01f);
+
+            for (var i = 0; i < 1000; i++)
+                a.Add(i);
+
+            byte[] copy = (byte[])a._array.Clone();
+
+            Assert.IsFalse(a.Remove(1001));
+
+            for (int i = 0; i < a._array.Length; i++)
+            {
+                Assert.AreEqual(a._array[i], copy[i]);
+            }
         }
     }
 }

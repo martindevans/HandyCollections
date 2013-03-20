@@ -4,6 +4,7 @@ using System.Linq;
 using HandyCollections;
 using HandyCollections.Extensions;
 using HandyCollections.Heap;
+using HandyCollections.RandomNumber;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HandyCollectionsTest

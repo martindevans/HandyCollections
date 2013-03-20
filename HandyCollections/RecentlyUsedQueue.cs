@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace HandyCollections
 {
@@ -12,7 +9,7 @@ namespace HandyCollections
     public class RecentlyUsedQueue<T>
         :IEnumerable<T>
     {
-        private LinkedList<T> list = new LinkedList<T>();
+        private readonly LinkedList<T> _list = new LinkedList<T>();
 
         /// <summary>
         /// Gets the count.
@@ -22,16 +19,8 @@ namespace HandyCollections
         {
             get
             {
-                return list.Count;
+                return _list.Count;
             }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RecentlyUsedQueue&lt;T&gt;"/> class.
-        /// </summary>
-        public RecentlyUsedQueue()
-        {
-
         }
 
         /// <summary>
@@ -43,16 +32,16 @@ namespace HandyCollections
         {
             bool newlyAdded = false;
 
-            var node = list.Find(item);
+            var node = _list.Find(item);
             if (node == null)
             {
                 node = new LinkedListNode<T>(item);
                 newlyAdded = true;
             }
             else
-                list.Remove(node);
+                _list.Remove(node);
 
-            list.AddLast(node);
+            _list.AddLast(node);
 
             return newlyAdded;
         }
@@ -65,7 +54,7 @@ namespace HandyCollections
         {
             get
             {
-                return list.First.Value;
+                return _list.First.Value;
             }
         }
 
@@ -75,8 +64,8 @@ namespace HandyCollections
         /// <returns>the item which was removed</returns>
         public T RemoveLeastRecentlyUsed()
         {
-            var v = list.First.Value;
-            list.RemoveFirst();
+            var v = _list.First.Value;
+            _list.RemoveFirst();
             return v;
         }
 
@@ -88,7 +77,7 @@ namespace HandyCollections
         {
             get
             {
-                return list.Last.Value;
+                return _list.Last.Value;
             }
         }
 
@@ -98,8 +87,8 @@ namespace HandyCollections
         /// <returns>the item which was removed</returns>
         public T RemoveMostRecentlyUsed()
         {
-            var v = list.Last.Value;
-            list.RemoveLast();
+            var v = _list.Last.Value;
+            _list.RemoveLast();
             return v;
         }
 
@@ -110,7 +99,7 @@ namespace HandyCollections
         /// <returns>True; if anything was removed, otherwise false</returns>
         public bool Remove(T item)
         {
-            return list.Remove(item);
+            return _list.Remove(item);
         }
 
         /// <summary>
@@ -119,7 +108,7 @@ namespace HandyCollections
         /// <returns></returns>
         public IEnumerator<T> GetEnumerator()
         {
-            return list.GetEnumerator();
+            return _list.GetEnumerator();
         }
 
         /// <summary>

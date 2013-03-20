@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace HandyCollections.Extensions
 {
@@ -34,9 +33,9 @@ namespace HandyCollections.Extensions
         public static int OrderSelect<T>(this IList<T> list, IComparer<T> comparer, int position)
         {
             if (position < 0)
-                throw new ArgumentOutOfRangeException("positiom must be >= zero");
+                throw new ArgumentOutOfRangeException("position");
             if (position >= list.Count)
-                throw new ArgumentOutOfRangeException("positiom must be < Count");
+                throw new ArgumentOutOfRangeException("position");
 
             return list.QuickSelect<T>(comparer, position, 0, list.Count);
         }
@@ -52,7 +51,7 @@ namespace HandyCollections.Extensions
             pivotIndex = list.Partition<T>(comparer, start, start + length - 1, pivotIndex);
 
             int lengthL1 = pivotIndex - start;
-            int lengthL2 = 1;
+            const int lengthL2 = 1;
             int lengthL3 = start + length - pivotIndex - 1;
 
             if (position < lengthL1) //position is in L1

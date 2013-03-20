@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace HandyCollections.RandomNumber
 {
@@ -15,10 +13,10 @@ namespace HandyCollections.RandomNumber
         /// <summary>
         /// The number of numbers this sequence will go through before repeating
         /// </summary>
-        public const int PERIOD = UInt16.MaxValue;
+        private const int PERIOD = UInt16.MaxValue;
 
-        private UInt16 lfsr;
-        private UInt16 bit;
+        private UInt16 _lfsr;
+        private UInt16 _bit;
         #endregion
 
         #region constructors
@@ -28,7 +26,7 @@ namespace HandyCollections.RandomNumber
         /// <param name="seed">The seed to initialise the sequence with</param>
         public LinearFeedbackShiftRegister16(UInt16 seed)
         {
-            lfsr = seed;
+            _lfsr = seed;
         }
 
         /// <summary>
@@ -47,10 +45,10 @@ namespace HandyCollections.RandomNumber
         /// <returns></returns>
         public UInt16 NextRandom()
         {
-            bit = (UInt16)(((lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5)) & 1);
-            lfsr = (UInt16)((lfsr >> 1) | (bit << 15));
+            _bit = (UInt16)(((_lfsr >> 0) ^ (_lfsr >> 2) ^ (_lfsr >> 3) ^ (_lfsr >> 5)) & 1);
+            _lfsr = (UInt16)((_lfsr >> 1) | (_bit << 15));
 
-            return lfsr;
+            return _lfsr;
         }
 
         /// <summary>
