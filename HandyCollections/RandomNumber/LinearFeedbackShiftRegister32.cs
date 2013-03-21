@@ -12,7 +12,7 @@ namespace HandyCollections.RandomNumber
         /// <summary>
         /// The number of numbers this sequence will go through before repeating
         /// </summary>
-        private const UInt32 PERIOD = UInt32.MaxValue;
+        public const UInt32 PERIOD = UInt32.MaxValue;
 
         readonly UInt16 _repeatThreshold;
         readonly LinearFeedbackShiftRegister16 _mostSignificantBits;
@@ -26,8 +26,8 @@ namespace HandyCollections.RandomNumber
         /// <param name="seed">The seed to initialise the sequence with</param>
         public LinearFeedbackShiftRegister32(UInt32 seed)
         {
-            _mostSignificantBits = new LinearFeedbackShiftRegister16((UInt16)seed);
-            _leastSignificantBits = new LinearFeedbackShiftRegister16((UInt16)(seed >> 16));
+            _mostSignificantBits = new LinearFeedbackShiftRegister16((UInt16)(seed | UInt16.MaxValue));
+            _leastSignificantBits = new LinearFeedbackShiftRegister16((UInt16)((seed | UInt16.MaxValue) >> 16));
 
             _repeatThreshold = _mostSignificantBits.NextRandom();
             _lsb = _leastSignificantBits.NextRandom();

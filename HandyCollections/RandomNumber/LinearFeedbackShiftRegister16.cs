@@ -13,7 +13,7 @@ namespace HandyCollections.RandomNumber
         /// <summary>
         /// The number of numbers this sequence will go through before repeating
         /// </summary>
-        private const int PERIOD = UInt16.MaxValue;
+        public const int PERIOD = UInt16.MaxValue;
 
         private UInt16 _lfsr;
         private UInt16 _bit;
@@ -26,6 +26,8 @@ namespace HandyCollections.RandomNumber
         /// <param name="seed">The seed to initialise the sequence with</param>
         public LinearFeedbackShiftRegister16(UInt16 seed)
         {
+            if (seed == 0)
+                seed++;
             _lfsr = seed;
         }
 
@@ -49,27 +51,6 @@ namespace HandyCollections.RandomNumber
             _lfsr = (UInt16)((_lfsr >> 1) | (_bit << 15));
 
             return _lfsr;
-        }
-
-        /// <summary>
-        /// Checks if this is implemented correctly
-        /// </summary>
-        public static void CorrectnessTest()
-        {
-            LinearFeedbackShiftRegister16 r = new LinearFeedbackShiftRegister16();
-
-            UInt16 first = r.NextRandom();
-            UInt16 value;
-            int period = 0;
-
-            do
-            {
-                value = r.NextRandom();
-                ++period;
-            } while (value != first);
-
-            if (period != PERIOD)
-                throw new Exception("Period is incorrect");
         }
 
         #region IEnumerable

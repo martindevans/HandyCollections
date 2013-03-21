@@ -32,10 +32,10 @@ namespace HandyCollections.RandomNumber
         /// <returns></returns>
         public unsafe static uint Random(uint upperBound = uint.MaxValue)
         {
-            int time = DateTime.Now.Millisecond;
-            uint uTime = *((uint*)&time);
+            long ticks = DateTime.Now.Ticks;
+            uint time = ((uint) (ticks & uint.MaxValue)) | ((uint) ((ticks >> 32) & uint.MaxValue));
 
-            return Random(uTime, upperBound);
+            return Random(time, upperBound);
         }
     }
 }
