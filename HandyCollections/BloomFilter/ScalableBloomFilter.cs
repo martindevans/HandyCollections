@@ -84,8 +84,6 @@ namespace HandyCollections.BloomFilter
             {
                 _slices.Add(new BloomFilterSlice<T>((int) (_initialCapacity * Math.Pow(SCALE, _slices.Count)), _falsePositiveProbability * Math.Pow(_ratio, _slices.Count)));
                 _lastSlice = _slices.Count - 1;
-
-                Console.WriteLine("Adding a new slice @" + Count);
             }
         }
 
@@ -93,7 +91,7 @@ namespace HandyCollections.BloomFilter
         {
             _lastSlice = -1;
             for (int i = 0; i < _slices.Count; i++)
-                _slices.Clear();
+                _slices[i].Clear();
         }
     }
 }
