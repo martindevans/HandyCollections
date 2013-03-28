@@ -337,7 +337,7 @@ namespace HandyCollections.Heap
         /// <summary>
         /// Reorder the heap
         /// </summary>
-        private void Heapify()
+        public void Heapify()
         {
             for (int i = _heap.Count / 2 - 1; i >= 0; i--)
                 TrickleDown(i);

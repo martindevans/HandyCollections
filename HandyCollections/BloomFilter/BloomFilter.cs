@@ -10,6 +10,7 @@ namespace HandyCollections.BloomFilter
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class BloomFilter<T>
+        :IBloomFilter<T>
     {
         private readonly BitArray _array;
 
@@ -61,9 +62,9 @@ namespace HandyCollections.BloomFilter
         /// </summary>
         /// <param name="estimatedsize">The estimated number of items to add to the filter</param>
         /// <param name="targetFalsePositiveRate">The target positive rate.</param>
-        public BloomFilter(int estimatedsize, float targetFalsePositiveRate)
+        public BloomFilter(int estimatedsize, double targetFalsePositiveRate)
         {
-            int size = (int)(-(estimatedsize * Math.Log(targetFalsePositiveRate)) / 0.480453014f);
+            int size = (int)Math.Ceiling(-(estimatedsize * Math.Log(targetFalsePositiveRate)) / 0.480453014f);
             int keys = (int)(0.7f * size / estimatedsize);
             _array = new BitArray(size, false);
             _keyCount = keys;
@@ -90,6 +91,7 @@ namespace HandyCollections.BloomFilter
                     _array.Set(ik, true);
                 }
             }
+
             return b;
         }
 

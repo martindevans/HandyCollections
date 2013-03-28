@@ -56,7 +56,10 @@
     <Compile Include="BinaryTree\BinaryTree.cs" />
     <Compile Include="BinaryTree\SplayTree.cs" />
     <Compile Include="BloomFilter\BloomFilter.cs" />
+    <Compile Include="BloomFilter\BloomFilterSlice.cs" />
     <Compile Include="BloomFilter\CountingBloomFilter.cs" />
+    <Compile Include="BloomFilter\IBloomFilter.cs" />
+    <Compile Include="BloomFilter\ScalableBloomFilter.cs" />
     <Compile Include="Extensions\IListExtensions.cs" />
     <Compile Include="Heap\MinMaxHeap.cs" />
     <Compile Include="Heap\MinMaxMedianHeap.cs" />

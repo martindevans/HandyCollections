@@ -1,5 +1,4 @@
-﻿using HandyCollections;
-using HandyCollections.BloomFilter;
+﻿using HandyCollections.BloomFilter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HandyCollectionsTest
@@ -14,6 +13,7 @@ namespace HandyCollectionsTest
 
             //10 cannot already be in the collection, so inserting it must succeed
             Assert.IsFalse(filter.Add(10));
+            Assert.IsTrue(filter.Add(10));
 
             //10 is in the collection
             Assert.IsTrue(filter.Contains(10));
@@ -73,6 +73,50 @@ namespace HandyCollectionsTest
             {
                 Assert.AreEqual(a._array[i], copy[i]);
             }
+        }
+
+        [TestMethod]
+        public void ScalableBloomFilterCorrectlyActsAsASet()
+        {
+            IBloomFilter<int> filter = new ScalableBloomFilter<int>(0.9, 10, 0.001);
+
+            //10 cannot already be in the collection, so inserting it must succeed
+            Assert.IsFalse(filter.Add(10));
+
+            //10 is in the collection
+            Assert.IsTrue(filter.Contains(10));
+
+            //check a load more numbers
+            for (int i = 0; i < 100; i++)
+            {
+                filter.Add(i);
+                Assert.IsTrue(filter.Contains(i));
+            }
+        }
+
+        [TestMethod]
+        public void ClearingScalabeBloomFilterResetsEverything()
+        {
+            ScalableBloomFilter<int> filter = new ScalableBloomFilter<int>(0.9, 1000, 0.001);
+
+            //Add a load of numbers
+            for (int i = 0; i < 100; i++)
+            {
+                filter.Add(i);
+                Assert.IsTrue(filter.Contains(i));
+            }
+            Assert.AreEqual(100, filter.Count);
+
+            filter.Clear();
+            Assert.AreEqual(0, filter.Count);
+
+            //Add them again
+            for (int i = 0; i < 100; i++)
+            {
+                filter.Add(i);
+                Assert.IsTrue(filter.Contains(i));
+            }
+            Assert.AreEqual(100, filter.Count);
         }
     }
 }
