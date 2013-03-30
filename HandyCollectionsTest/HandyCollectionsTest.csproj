@@ -53,6 +53,7 @@
     <Compile Include="BloomFilterTest.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="LinearFeedbackShiftRegisterTest.cs" />
+    <Compile Include="MinHeapTest.cs" />
     <Compile Include="MinMaxHeapTest.cs" />
     <Compile Include="MinMaxMedianHeapTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
