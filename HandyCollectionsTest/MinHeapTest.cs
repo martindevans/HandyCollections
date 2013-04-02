@@ -38,5 +38,19 @@ namespace HandyCollectionsTest
 
             Assert.AreEqual(5, heap.Minimum);
         }
+
+        [TestMethod]
+        public void InsertLotsOfNumbersToMinHeap()
+        {
+            var numbers = new int[] {
+                12,12,12,12,12,12,13,12,13,11,12,12,13,12,12,12,13,13,12,13,13,13,12,12,13,12,13,12,13,13,12,14,12,12,13,12,12,13,13,12,14,13,12,12,13,13,13,13,13,13,13,12,13,13,14,13,13,13,13,13,
+            };
+
+            MinHeap<int> heap = new MinHeap<int>(100, Comparer<int>.Default);
+            foreach (var number in numbers)
+                heap.Add(number);
+            while (heap.Count > 0)
+                heap.RemoveMin();
+        }
     }
 }

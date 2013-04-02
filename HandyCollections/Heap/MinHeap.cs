@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace HandyCollections.Heap
 {
@@ -12,9 +13,13 @@ namespace HandyCollections.Heap
         private readonly List<T> _heap;
         private readonly IComparer<T> _comparer;
 
-        private Queue<int> _searchQueue = new Queue<int>();
-
         /// <summary>
+        /// 
+        /// </summary>
+        public int Count { get {return _heap.Count; }
+    }
+
+    /// <summary>
         /// 
         /// </summary>
         public T Minimum
@@ -48,8 +53,12 @@ namespace HandyCollections.Heap
         /// <exception cref="NotImplementedException"></exception>
         public void Add(T item)
         {
+            AssertHeapProperty();
+
             _heap.Add(item);
             BubbleUp(_heap.Count - 1);
+
+            AssertHeapProperty();
         }
 
         private void BubbleUp(int index)
@@ -77,38 +86,55 @@ namespace HandyCollections.Heap
             return RemoveAt(0);
         }
 
-        private T RemoveAt(int index)
-        {
-            var removed = _heap[index];
-
-            _heap[index] = _heap[_heap.Count - 1];
-            _heap.RemoveAt(_heap.Count - 1);
-
-            TrickleDown(index);
-
-            return removed;
-        }
-
-        private void TrickleDown(int index)
-        {
-            while (index < _heap.Count)
-            {
-                int smallestChildIndex = SmallestChildSmallerThan(index, _heap[index]);
-                if (smallestChildIndex == -1)
-                    break;
-
-                Swap(smallestChildIndex, index);
-                index = smallestChildIndex;
-            }
-        }
-
         /// <summary>
         /// 
         /// </summary>
         /// <param name="index"></param>
-        public void Update(int index)
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public T RemoveAt(int index)
         {
-            Add(RemoveAt(index));
+            if (_heap.Count == 0)
+                throw new InvalidOperationException("Heap is empty");
+            if (index < 0 || index > _heap.Count)
+                throw new ArgumentOutOfRangeException("index");
+
+            var removed = _heap[index];
+
+            AssertHeapProperty();
+
+            _heap[index] = _heap[_heap.Count - 1];
+            _heap.RemoveAt(_heap.Count - 1);
+
+            if (_heap.Count > 0 && index < _heap.Count)
+                BubbleUp(TrickleDown(index));
+
+            AssertHeapProperty();
+
+            return removed;
+        }
+
+        private int TrickleDown(int index)
+        {
+            if (index >= _heap.Count)
+                throw new ArgumentException();
+
+            int smallestChildIndex = SmallestChildSmallerThan(index, _heap[index]);
+            if (smallestChildIndex == -1)
+                return index;
+
+            Swap(smallestChildIndex, index);
+            return TrickleDown(smallestChildIndex);
+        }
+
+        private void AssertHeapProperty()
+        {
+#if DEBUG
+            //for (int i = 0; i < _heap.Count; i++)
+            //    if (IsLessThan(_heap[i], Minimum))
+            //        throw new Exception("Heap property violated");
+#endif
         }
 
         private bool IsLessThan(T a, T b)
@@ -146,30 +172,19 @@ namespace HandyCollections.Heap
         private int SmallestChildSmallerThan(int i, T item)
         {
             int leftChildIndex = LeftChild(i);
-            bool isLeftChild = leftChildIndex < _heap.Count;
 
             int rightChildIndex = RightChild(i);
-            bool isRightChild = rightChildIndex < _heap.Count;
 
-            if (!isLeftChild)
-                return -1;
+            int smallest = -1;
+            if (leftChildIndex < _heap.Count)
+                smallest = leftChildIndex;
+            if (rightChildIndex < _heap.Count && IsLessThan(_heap[rightChildIndex], _heap[leftChildIndex]))
+                smallest = rightChildIndex;
 
-            T leftChild = _heap[leftChildIndex];
+            if (smallest > -1 && IsLessThan(_heap[smallest], item))
+                return smallest;
 
-            if (!isRightChild || IsLessThan(leftChild, _heap[rightChildIndex]))
-            {
-                if (IsLessThan(leftChild, item))
-                    return leftChildIndex;
-                else
-                    return -1;
-            }
-            else
-            {
-                if (IsLessThan(_heap[rightChildIndex], item))
-                    return rightChildIndex;
-                else
-                    return -1;
-            }
+            return -1;
         }
 
         /// <summary>
@@ -179,24 +194,7 @@ namespace HandyCollections.Heap
         /// <returns></returns>
         public int IndexOf(T item)
         {
-            _searchQueue.Clear();
-            _searchQueue.Enqueue(0);
-
-            while (_searchQueue.Count > 0)
-            {
-                var index = _searchQueue.Dequeue();
-                var comparison = _comparer.Compare(_heap[index], item);
-
-                if (comparison == 0)
-                    return index;
-                if (comparison == -1)
-                {
-                    _searchQueue.Enqueue(LeftChild(index));
-                    _searchQueue.Enqueue(RightChild(index));
-                }
-            }
-
-            return -1;
+            return _heap.IndexOf(item);
         }
 
         /// <summary>
