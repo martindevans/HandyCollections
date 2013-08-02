@@ -5,6 +5,10 @@ using System.Text;
 
 namespace HandyCollections.BloomFilter
 {
+    /// <summary>
+    /// A probabalistic data set, which may return false positives but never false negatives
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IBloomFilter<T>
     {
         /// <summary>

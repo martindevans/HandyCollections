@@ -27,6 +27,9 @@ namespace HandyCollections.BloomFilter
             get { return _slices.Select(f => f.Count).Sum(); }
         }
 
+        /// <summary>
+        /// The amount of bytes this bloom filter is using
+        /// </summary>
         public int SizeInBytes
         {
             get { return _slices.Select(f => f.SizeInBytes).Sum(); }
