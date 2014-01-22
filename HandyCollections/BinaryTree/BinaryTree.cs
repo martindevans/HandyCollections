@@ -158,7 +158,7 @@ namespace HandyCollections.BinaryTree
         /// <summary>
         /// Rotates around the pivot node
         /// </summary>
-        /// <seealso cref="http://webdocs.cs.ualberta.ca/~holte/T26/tree-rotation.html"/>
+        /// <remarks>http://webdocs.cs.ualberta.ca/~holte/T26/tree-rotation.html</remarks>
         /// <param name="pivot"></param>
         /// <param name="rotateRight"></param>
         public void Rotate(Node pivot, bool rotateRight)
