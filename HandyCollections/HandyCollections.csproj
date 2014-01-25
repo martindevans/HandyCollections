@@ -84,16 +84,19 @@
     <Compile Include="BloomFilter\IBloomFilter.cs" />
     <Compile Include="BloomFilter\ScalableBloomFilter.cs" />
     <Compile Include="Extensions\IListExtensions.cs" />
+    <Compile Include="Geometry\BoundingBox.cs" />
     <Compile Include="Heap\MinHeap.cs" />
     <Compile Include="Heap\MinMaxHeap.cs" />
     <Compile Include="Heap\MinMaxMedianHeap.cs" />
     <Compile Include="Extensions\IEnumerableExtension.cs" />
+    <Compile Include="Octree.cs" />
     <Compile Include="RandomNumber\LinearFeedbackShiftRegister16.cs" />
     <Compile Include="RandomNumber\LinearFeedbackShiftRegister32.cs" />
     <Compile Include="RecentlyUsedQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RandomNumber\StaticRandomNumber.cs" />
     <Compile Include="TypedWeakReference.cs" />
+    <Compile Include="Geometry\Vector3.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
