@@ -23,5 +23,15 @@ namespace HandyCollectionsTest
 
             Assert.AreEqual("hello", _octree.ContainedBy(new BoundingBox(new Vector3(0), new Vector3(3))).Single());
         }
+
+        [TestMethod]
+        public void InsertingRipplesDown()
+        {
+            _octree.Insert(new BoundingBox(new Vector3(1), new Vector3(2)), "hello");
+            _octree.Insert(new BoundingBox(new Vector3(2), new Vector3(3)), "world");
+            _octree.Insert(new BoundingBox(new Vector3(3), new Vector3(4)), "こにちは");
+
+            Assert.AreEqual("こにちは", _octree.ContainedBy(new BoundingBox(new Vector3(2.5f), new Vector3(4.5f))).Single());
+        }
     }
 }
