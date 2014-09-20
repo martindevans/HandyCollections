@@ -90,6 +90,7 @@
     <Compile Include="Heap\MinMaxMedianHeap.cs" />
     <Compile Include="Extensions\IEnumerableExtension.cs" />
     <Compile Include="Geometry\Octree.cs" />
+    <Compile Include="Set\OrderedSet.cs" />
     <Compile Include="RandomNumber\LinearFeedbackShiftRegister16.cs" />
     <Compile Include="RandomNumber\LinearFeedbackShiftRegister32.cs" />
     <Compile Include="RecentlyUsedQueue.cs" />
