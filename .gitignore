@@ -10,3 +10,6 @@ HandyCollectionsTest/bin
 HandyCollectionsTest/obj
 HandyCollections/bin
 HandyCollections/obj
+/*.ncrunchsolution
+/HandyCollections/*.ncrunchproject
+/HandyCollectionsTest/*.ncrunchproject

@@ -85,6 +85,9 @@
     <Compile Include="BloomFilter\ScalableBloomFilter.cs" />
     <Compile Include="Extensions\IListExtensions.cs" />
     <Compile Include="Geometry\BoundingBox.cs" />
+    <Compile Include="Geometry\BoundingRectangle.cs" />
+    <Compile Include="Geometry\Quadtree.cs" />
+    <Compile Include="Geometry\Vector2.cs" />
     <Compile Include="Heap\MinHeap.cs" />
     <Compile Include="Heap\MinMaxHeap.cs" />
     <Compile Include="Heap\MinMaxMedianHeap.cs" />
