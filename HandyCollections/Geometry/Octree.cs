@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace HandyCollections.Geometry
@@ -53,6 +54,11 @@ namespace HandyCollections.Geometry
         public IEnumerable<T> ContainedBy(BoundingBox bounds)
         {
             return _root.Intersects(bounds).Where(a => bounds.Contains(a.Bounds)).Select(a => a.Value);
+        }
+
+        public bool Remove(BoundingRectangle bounds, T item)
+        {
+            return _root.Remove(bounds, item);
         }
 
         private class Node
@@ -145,6 +151,31 @@ namespace HandyCollections.Geometry
                         yield return member;
                     }
                 }
+            }
+
+            public bool Remove(BoundingRectangle bounds, T item)
+            {
+                var pred = new Predicate<Member>(a => a.Value.Equals(item));
+
+                return RemoveRecursive(bounds, pred);
+            }
+
+            private bool RemoveRecursive(BoundingRectangle bounds, Predicate<Member> predicate)
+            {
+                var index = _items.FindIndex(predicate);
+                if (index != -1)
+                {
+                    _items.RemoveAt(index);
+                    return true;
+                }
+
+                foreach (var child in _children)
+                {
+                    if (child.RemoveRecursive(bounds, predicate))
+                        return true;
+                }
+
+                return false;
             }
         }
 
