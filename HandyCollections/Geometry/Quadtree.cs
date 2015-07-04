@@ -148,10 +148,13 @@ namespace HandyCollections.Geometry
                     return true;
                 }
 
-                foreach (var child in _children)
+                if (_children != null)
                 {
-                    if (child.RemoveRecursive(bounds, predicate))
-                        return true;
+                    foreach (var child in _children)
+                    {
+                        if (child.RemoveRecursive(bounds, predicate))
+                            return true;
+                    }
                 }
 
                 return false;
