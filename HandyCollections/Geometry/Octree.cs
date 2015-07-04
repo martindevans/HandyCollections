@@ -56,7 +56,7 @@ namespace HandyCollections.Geometry
             return _root.Intersects(bounds).Where(a => bounds.Contains(a.Bounds)).Select(a => a.Value);
         }
 
-        public bool Remove(BoundingRectangle bounds, T item)
+        public bool Remove(BoundingBox bounds, T item)
         {
             return _root.Remove(bounds, item);
         }
@@ -153,15 +153,18 @@ namespace HandyCollections.Geometry
                 }
             }
 
-            public bool Remove(BoundingRectangle bounds, T item)
+            public bool Remove(BoundingBox bounds, T item)
             {
                 var pred = new Predicate<Member>(a => a.Value.Equals(item));
 
                 return RemoveRecursive(bounds, pred);
             }
 
-            private bool RemoveRecursive(BoundingRectangle bounds, Predicate<Member> predicate)
+            private bool RemoveRecursive(BoundingBox bounds, Predicate<Member> predicate)
             {
+                if (!_bounds.Intersects(bounds))
+                    return false;
+
                 var index = _items.FindIndex(predicate);
                 if (index != -1)
                 {

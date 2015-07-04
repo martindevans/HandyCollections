@@ -141,6 +141,9 @@ namespace HandyCollections.Geometry
 
             private bool RemoveRecursive(BoundingRectangle bounds, Predicate<Member> predicate)
             {
+                if (!_bounds.Intersects(bounds))
+                    return false;
+
                 var index = _items.FindIndex(predicate);
                 if (index != -1)
                 {
