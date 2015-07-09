@@ -86,13 +86,14 @@
     <Compile Include="Extensions\IListExtensions.cs" />
     <Compile Include="Geometry\BoundingBox.cs" />
     <Compile Include="Geometry\BoundingRectangle.cs" />
+    <Compile Include="Geometry\GeometricTree.cs" />
+    <Compile Include="Geometry\Octree.cs" />
     <Compile Include="Geometry\Quadtree.cs" />
     <Compile Include="Geometry\Vector2.cs" />
     <Compile Include="Heap\MinHeap.cs" />
     <Compile Include="Heap\MinMaxHeap.cs" />
     <Compile Include="Heap\MinMaxMedianHeap.cs" />
     <Compile Include="Extensions\IEnumerableExtension.cs" />
-    <Compile Include="Geometry\Octree.cs" />
     <Compile Include="Set\OrderedSet.cs" />
     <Compile Include="RandomNumber\LinearFeedbackShiftRegister16.cs" />
     <Compile Include="RandomNumber\LinearFeedbackShiftRegister32.cs" />

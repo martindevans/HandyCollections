@@ -1,14 +1,13 @@
-﻿using System.Linq;
-using HandyCollections;
-using HandyCollections.Geometry;
+﻿using HandyCollections.Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 
 namespace HandyCollectionsTest
 {
     [TestClass]
     public class OctreeTest
     {
-        private readonly Octree<string> _octree = new Octree<string>(new Vector3(0), new Vector3(10), 1);
+        private readonly Octree<string> _octree = new Octree<string>(new BoundingBox(new Vector3(0), new Vector3(10)), 1);
             
         [TestInitialize]
         public void Initialize()

@@ -1,194 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
+﻿
 namespace HandyCollections.Geometry
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class Octree<T>
+    public class Octree<TItem>
+        : GeometricTree<TItem, Vector3, BoundingBox>
     {
-        private readonly int _threshold;
-        private readonly Node _root;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="min"></param>
-        /// <param name="max"></param>
-        /// <param name="threshold"></param>
-        public Octree(Vector3 min, Vector3 max, int threshold)
+        public Octree(BoundingBox bounds, int threshold)
+            : base(bounds, threshold)
         {
-            _threshold = threshold;
-            _root = new Node(min, max);
         }
 
-        /// <summary>
-        /// Insert an item into this octree
-        /// </summary>
-        /// <param name="bounds"></param>
-        /// <param name="item"></param>
-        public void Insert(BoundingBox bounds, T item)
+        protected override bool Contains(BoundingBox container, BoundingBox contained)
         {
-            var a = new Member {Bounds = bounds, Value = item};
-            _root.Insert(a, _threshold);
+            return container.Contains(contained);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="bounds"></param>
-        /// <returns></returns>
-        public IEnumerable<T> Intersects(BoundingBox bounds)
+        protected override bool Intersects(BoundingBox a, BoundingBox b)
         {
-            return _root.Intersects(bounds).Select(a => a.Value);
+            return a.Intersects(b);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="bounds"></param>
-        /// <returns></returns>
-        public IEnumerable<T> ContainedBy(BoundingBox bounds)
+        protected override BoundingBox[] Split(BoundingBox bound)
         {
-            return _root.Intersects(bounds).Where(a => bounds.Contains(a.Bounds)).Select(a => a.Value);
-        }
+            var bounds = new BoundingBox[8];
+            var min = bound.Min;
+            var size = (bound.Max - bound.Min) / 2f;
 
-        public bool Remove(BoundingBox bounds, T item)
-        {
-            return _root.Remove(bounds, item);
-        }
-
-        private class Node
-        {
-            private readonly List<Member> _items = new List<Member>();
-
-            private BoundingBox _bounds;
-            private Node[] _children;
-
-            public Node(Vector3 min, Vector3 max)
+            int i = 0;
+            for (int x = 0; x < 2; x++)
             {
-                _bounds = new BoundingBox(min, max);
-            }
-
-            private void Split(int splitThreshold)
-            {
-                _children = new Node[8];
-                int childIndex = 0;
-                var min = _bounds.Min;
-                var size = (_bounds.Max - _bounds.Min) / 2f;
-                for (int x = 0; x < 2; x++)
+                for (int y = 0; y < 2; y++)
                 {
-                    for (int y = 0; y < 2; y++)
+                    for (int z = 0; z < 2; z++)
                     {
-                        for (int z = 0; z < 2; z++)
-                        {
-                            var positionOffset = size * new Vector3(x, y, z);
-                            _children[childIndex++] = new Node(min + positionOffset, min + size + positionOffset);
-                        }
-                    }
-                }
-
-                for (int i = _items.Count - 1; i >= 0; i--)
-                {
-                    var item = _items[i];
-
-                    //Try to insert this item into each child (if successful, it's removed from this node)
-                    foreach (Node child in _children)
-                    {
-                        if (child._bounds.Contains(item.Bounds))
-                        {
-                            child.Insert(item, splitThreshold);
-                            _items.RemoveAt(i);
-                            break;
-                        }
+                        var positionOffset = size * new Vector3(x, y, z);
+                        bounds[i++] = new BoundingBox(min + positionOffset, min + size + positionOffset);
                     }
                 }
             }
 
-            public void Insert(Member m, int splitThreshold)
-            {
-                if (_children == null)
-                {
-                    _items.Add(m);
-
-                    if (_items.Count > splitThreshold)
-                        Split(splitThreshold);
-                }
-                else
-                {
-                    //Try to put this item into a child node
-                    foreach (var child in _children)
-                    {
-                        if (child._bounds.Contains(m.Bounds))
-                        {
-                            child.Insert(m, splitThreshold);
-                            return;
-                        }
-                    }
-
-                    //Failed! Can't find a child to contain this, store it here instead
-                    _items.Add(m);
-                }
-            }
-
-            public IEnumerable<Member> Intersects(BoundingBox bounds)
-            {
-                //Select items in this node
-                foreach (var member in _items)
-                {
-                    if (member.Bounds.Intersects(bounds))
-                        yield return member;
-                }
-
-                //Select items in children
-                if (_children != null)
-                {
-                    foreach (var member in _children.Where(c => c._bounds.Intersects(bounds)).SelectMany(c => c.Intersects(bounds)))
-                    {
-                        yield return member;
-                    }
-                }
-            }
-
-            public bool Remove(BoundingBox bounds, T item)
-            {
-                var pred = new Predicate<Member>(a => a.Value.Equals(item));
-
-                return RemoveRecursive(bounds, pred);
-            }
-
-            private bool RemoveRecursive(BoundingBox bounds, Predicate<Member> predicate)
-            {
-                if (!_bounds.Intersects(bounds))
-                    return false;
-
-                var index = _items.FindIndex(predicate);
-                if (index != -1)
-                {
-                    _items.RemoveAt(index);
-                    return true;
-                }
-
-                if (_children != null)
-                {
-                    foreach (var child in _children)
-                    {
-                        if (child.RemoveRecursive(bounds, predicate))
-                            return true;
-                    }
-                }
-
-                return false;
-            }
-        }
-
-        private struct Member
-        {
-            public T Value;
-            public BoundingBox Bounds;
+            return bounds;
         }
     }
 }
