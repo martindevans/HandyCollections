@@ -126,7 +126,7 @@ namespace HandyCollections.Geometry
                         continue;
 
                     //yield items as appropriate
-                    foreach (var member in _items)
+                    foreach (var member in n._items)
                         if (_tree.Intersects(member.Bounds, bounds))
                             yield return member;
 
