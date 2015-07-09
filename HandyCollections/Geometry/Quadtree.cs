@@ -1,7 +1,7 @@
 ﻿
 namespace HandyCollections.Geometry
 {
-    class Quadtree<TItem>
+    public class Quadtree<TItem>
         : GeometricTree<TItem, Vector2, BoundingRectangle>
     {
         public Quadtree(BoundingRectangle bounds, int threshold)
