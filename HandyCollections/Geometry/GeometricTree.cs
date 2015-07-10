@@ -114,12 +114,13 @@ namespace HandyCollections.Geometry
 
             public IEnumerable<Member> Intersects(TBound bounds)
             {
-                Stack<Node> nodes = new Stack<Node>();
-                nodes.Push(this);
+                List<Node> nodes = new List<Node>(50) { this };
 
                 while (nodes.Count > 0)
                 {
-                    var n = nodes.Pop();
+                    //Remove node
+                    var n = nodes[nodes.Count - 1];
+                    nodes.RemoveAt(nodes.Count - 1);
 
                     //Skip nodes we do not intersect
                     if (!_tree.Intersects(n._bounds, bounds))
@@ -133,7 +134,7 @@ namespace HandyCollections.Geometry
                     //push children onto stack to be checked
                     if (n._children != null)
                         for (int i = 0; i < n._children.Length; i++)
-                            nodes.Push(n._children[i]);
+                            nodes.Add(n._children[i]);
                 }
             }
 
