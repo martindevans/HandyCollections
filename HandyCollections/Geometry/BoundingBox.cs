@@ -37,6 +37,12 @@ namespace HandyCollections.Geometry
         [Pure]
         public bool Intersects(BoundingBox bounds)
         {
+            return Intersects(ref bounds);
+        }
+
+        [Pure]
+        public bool Intersects(ref BoundingBox bounds)
+        {
             return bounds.Min.X < Max.X && bounds.Max.X > Min.X
                    && bounds.Min.Y < Max.Y && bounds.Max.Y > Min.Y
                    && bounds.Min.Z < Max.Z && bounds.Max.Z > Min.Z;
@@ -49,6 +55,12 @@ namespace HandyCollections.Geometry
         /// <returns></returns>
         [Pure]
         public bool Contains(BoundingBox bounds)
+        {
+            return Contains(ref bounds);
+        }
+
+        [Pure]
+        public bool Contains(ref BoundingBox bounds)
         {
             return bounds.Min.X > Min.X && bounds.Max.X < Max.X
                    && bounds.Min.Y > Min.Y && bounds.Max.Y < Max.Y

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
+﻿using System.Diagnostics.Contracts;
 
 namespace HandyCollections.Geometry
 {
@@ -38,7 +34,7 @@ namespace HandyCollections.Geometry
         public bool Intersects(BoundingRectangle bounds)
         {
             return bounds.Min.X < Max.X && bounds.Max.X > Min.X
-                   && bounds.Min.Y < Max.Y && bounds.Max.Y > Min.Y;
+                && bounds.Min.Y < Max.Y && bounds.Max.Y > Min.Y;
         }
 
         /// <summary>
@@ -50,7 +46,7 @@ namespace HandyCollections.Geometry
         public bool Contains(BoundingRectangle bounds)
         {
             return bounds.Min.X > Min.X && bounds.Max.X < Max.X
-                   && bounds.Min.Y > Min.Y && bounds.Max.Y < Max.Y;
+                && bounds.Min.Y > Min.Y && bounds.Max.Y < Max.Y;
         }
     }
 }

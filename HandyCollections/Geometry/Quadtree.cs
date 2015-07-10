@@ -9,12 +9,12 @@ namespace HandyCollections.Geometry
         {
         }
 
-        protected override bool Contains(BoundingRectangle container, BoundingRectangle contained)
+        protected override bool Contains(BoundingRectangle container, ref BoundingRectangle contained)
         {
             return container.Contains(contained);
         }
 
-        protected override bool Intersects(BoundingRectangle a, BoundingRectangle b)
+        protected override bool Intersects(BoundingRectangle a, ref BoundingRectangle b)
         {
             return a.Intersects(b);
         }

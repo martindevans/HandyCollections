@@ -9,14 +9,14 @@ namespace HandyCollections.Geometry
         {
         }
 
-        protected override bool Contains(BoundingBox container, BoundingBox contained)
+        protected override bool Contains(BoundingBox container, ref BoundingBox contained)
         {
-            return container.Contains(contained);
+            return container.Contains(ref contained);
         }
 
-        protected override bool Intersects(BoundingBox a, BoundingBox b)
+        protected override bool Intersects(BoundingBox a, ref BoundingBox b)
         {
-            return a.Intersects(b);
+            return a.Intersects(ref b);
         }
 
         protected override BoundingBox[] Split(BoundingBox bound)

@@ -5,6 +5,8 @@ using System.Linq;
 namespace HandyCollections.Geometry
 {
     public abstract class GeometricTree<TItem, TVector, TBound>
+        where TVector : struct
+        where TBound : struct
     {
         private readonly int _threshold;
         private readonly Node _root;
@@ -21,8 +23,8 @@ namespace HandyCollections.Geometry
             _root = new Node(this, bounds);
         }
 
-        protected abstract bool Contains(TBound container, TBound contained);
-        protected abstract bool Intersects(TBound a, TBound b);
+        protected abstract bool Contains(TBound container, ref TBound contained);
+        protected abstract bool Intersects(TBound a, ref TBound b);
 
         protected abstract TBound[] Split(TBound bound);
 
@@ -39,7 +41,7 @@ namespace HandyCollections.Geometry
 
         public IEnumerable<TItem> ContainedBy(TBound bounds)
         {
-            return _root.Intersects(bounds).Where(a => Contains(bounds, a.Bounds)).Select(a => a.Value);
+            return _root.Intersects(bounds).Where(a => Contains(bounds, ref a.Bounds)).Select(a => a.Value);
         }
 
         public bool Remove(TBound bounds, TItem item)
@@ -76,7 +78,8 @@ namespace HandyCollections.Geometry
                     //Try to insert this item into each child (if successful, it's removed from this node)
                     foreach (Node child in _children)
                     {
-                        if (_tree.Contains(child._bounds, item.Bounds))
+                        var cb = child._bounds;
+                        if (_tree.Contains(cb, ref item.Bounds))
                         {
                             child.Insert(item, splitThreshold);
                             _items.RemoveAt(i);
@@ -100,7 +103,8 @@ namespace HandyCollections.Geometry
                     //Try to put this item into a child node
                     foreach (var child in _children)
                     {
-                        if (_tree.Contains(child._bounds, m.Bounds))
+                        var cb = child._bounds;
+                        if (_tree.Contains(cb, ref m.Bounds))
                         {
                             child.Insert(m, splitThreshold);
                             return;
@@ -123,12 +127,12 @@ namespace HandyCollections.Geometry
                     nodes.RemoveAt(nodes.Count - 1);
 
                     //Skip nodes we do not intersect
-                    if (!_tree.Intersects(n._bounds, bounds))
+                    if (!_tree.Intersects(n._bounds, ref bounds))
                         continue;
 
                     //yield items as appropriate
                     foreach (var member in n._items)
-                        if (_tree.Intersects(member.Bounds, bounds))
+                        if (_tree.Intersects(member.Bounds, ref bounds))
                             yield return member;
 
                     //push children onto stack to be checked
@@ -147,7 +151,7 @@ namespace HandyCollections.Geometry
 
             private bool RemoveRecursive(TBound bounds, Predicate<Member> predicate)
             {
-                if (!_tree.Intersects(_bounds, bounds))
+                if (!_tree.Intersects(_bounds, ref bounds))
                     return false;
 
                 var index = _items.FindIndex(predicate);
