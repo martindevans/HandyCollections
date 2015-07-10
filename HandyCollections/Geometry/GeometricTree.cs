@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace HandyCollections.Geometry
 {
@@ -36,12 +35,18 @@ namespace HandyCollections.Geometry
 
         public IEnumerable<TItem> Intersects(TBound bounds)
         {
-            return _root.Intersects(bounds).Select(a => a.Value);
+            foreach (var item in _root.Intersects(bounds))
+                yield return item.Value;
         }
 
         public IEnumerable<TItem> ContainedBy(TBound bounds)
         {
-            return _root.Intersects(bounds).Where(a => Contains(bounds, ref a.Bounds)).Select(a => a.Value);
+            foreach (var item in _root.Intersects(bounds))
+            {
+                var b = item.Bounds;
+                if (Contains(bounds, ref b))
+                    yield return item.Value;
+            }
         }
 
         public bool Remove(TBound bounds, TItem item)
@@ -137,8 +142,7 @@ namespace HandyCollections.Geometry
 
                     //push children onto stack to be checked
                     if (n._children != null)
-                        for (int i = 0; i < n._children.Length; i++)
-                            nodes.Add(n._children[i]);
+                        nodes.AddRange(n._children);
                 }
             }
 
