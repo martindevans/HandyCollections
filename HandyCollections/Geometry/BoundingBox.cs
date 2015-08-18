@@ -1,5 +1,6 @@
 ﻿
 using System.Diagnostics.Contracts;
+using System.Numerics;
 
 namespace HandyCollections.Geometry
 {

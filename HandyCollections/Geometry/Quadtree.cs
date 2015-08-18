@@ -1,4 +1,6 @@
 ﻿
+using System.Numerics;
+
 namespace HandyCollections.Geometry
 {
     public class Quadtree<TItem>

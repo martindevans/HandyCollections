@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Numerics;
 using HandyCollections.Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;

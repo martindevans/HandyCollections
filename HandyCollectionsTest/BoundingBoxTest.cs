@@ -1,4 +1,5 @@
-﻿using HandyCollections.Geometry;
+﻿using System.Numerics;
+using HandyCollections.Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HandyCollectionsTest
