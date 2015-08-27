@@ -66,6 +66,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SwizzleMyVectors, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SwizzleMyVectors.1.1.1.0\lib\net46\SwizzleMyVectors.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -90,8 +94,6 @@
     <Compile Include="BloomFilter\IBloomFilter.cs" />
     <Compile Include="BloomFilter\ScalableBloomFilter.cs" />
     <Compile Include="Extensions\IListExtensions.cs" />
-    <Compile Include="Geometry\BoundingBox.cs" />
-    <Compile Include="Geometry\BoundingRectangle.cs" />
     <Compile Include="Geometry\GeometricTree.cs" />
     <Compile Include="Geometry\Octree.cs" />
     <Compile Include="Geometry\Quadtree.cs" />
@@ -107,7 +109,9 @@
     <Compile Include="RandomNumber\StaticRandomNumber.cs" />
     <Compile Include="TypedWeakReference.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

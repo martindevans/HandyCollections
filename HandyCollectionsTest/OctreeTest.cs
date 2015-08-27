@@ -4,6 +4,8 @@ using System.Numerics;
 using HandyCollections.Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
+using SwizzleMyVectors;
+using SwizzleMyVectors.Geometry;
 
 namespace HandyCollectionsTest
 {

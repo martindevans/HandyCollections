@@ -1,5 +1,5 @@
-﻿
-using System.Numerics;
+﻿using System.Numerics;
+using SwizzleMyVectors.Geometry;
 
 namespace HandyCollections.Geometry
 {
@@ -13,12 +13,16 @@ namespace HandyCollections.Geometry
 
         protected override bool Contains(BoundingBox container, ref BoundingBox contained)
         {
-            return container.Contains(ref contained);
+            ContainmentType result;
+            container.Contains(ref contained, out result);
+            return result == ContainmentType.Contains;
         }
 
         protected override bool Intersects(BoundingBox a, ref BoundingBox b)
         {
-            return a.Intersects(ref b);
+            bool result;
+            a.Intersects(ref b, out result);
+            return result;
         }
 
         protected override BoundingBox[] Split(BoundingBox bound)
