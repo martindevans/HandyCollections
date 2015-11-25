@@ -15,7 +15,6 @@ namespace HandyCollections.Geometry
         /// </summary>
         /// <param name="bounds"></param>
         /// <param name="threshold"></param>
-        /// <param name="dimension"></param>
         protected GeometricTree(TBound bounds, int threshold)
         {
             _threshold = threshold;
@@ -52,6 +51,11 @@ namespace HandyCollections.Geometry
         public bool Remove(TBound bounds, TItem item)
         {
             return _root.Remove(bounds, item);
+        }
+
+        public bool Remove(TBound bounds, Predicate<TItem> pred)
+        {
+            return _root.Remove(bounds, pred);
         }
 
         private class Node
@@ -151,6 +155,13 @@ namespace HandyCollections.Geometry
                 var pred = new Predicate<Member>(a => a.Value.Equals(item));
 
                 return RemoveRecursive(bounds, pred);
+            }
+
+            public bool Remove(TBound bounds, Predicate<TItem> pred)
+            {
+                var predInner = new Predicate<Member>(a => pred(a.Value));
+
+                return RemoveRecursive(bounds, predInner);
             }
 
             private bool RemoveRecursive(TBound bounds, Predicate<Member> predicate)
