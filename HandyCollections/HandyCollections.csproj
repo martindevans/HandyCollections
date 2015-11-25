@@ -97,6 +97,7 @@
     <Compile Include="Geometry\GeometricTree.cs" />
     <Compile Include="Geometry\Octree.cs" />
     <Compile Include="Geometry\Quadtree.cs" />
+    <Compile Include="Heap\IMinHeap.cs" />
     <Compile Include="Heap\MinHeap.cs" />
     <Compile Include="Heap\MinMaxHeap.cs" />
     <Compile Include="Heap\MinMaxMedianHeap.cs" />

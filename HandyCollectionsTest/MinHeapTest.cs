@@ -52,5 +52,21 @@ namespace HandyCollectionsTest
             while (heap.Count > 0)
                 heap.RemoveMin();
         }
+
+        [TestMethod]
+        public void BulkInsertToMinHeap()
+        {
+            var values = new[] {
+                1, 2, 5, 213, 25, 3, 2, 5, 3, 2, 45, 2, 5, 2, 2, 4, 6, 32, 75, 5, 47, 7, 4, 3, 5, 34, 4
+            };
+
+            var heap = new MinHeap<int>(100, Comparer<int>.Default);
+            heap.Add(values);
+
+            //Sort values and test that the heap returns them in the same order
+            Array.Sort(values);
+            foreach (var value in values)
+                Assert.AreEqual(value, heap.RemoveMin());
+        }
     }
 }

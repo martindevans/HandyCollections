@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace HandyCollections.Heap
 {
@@ -9,18 +8,21 @@ namespace HandyCollections.Heap
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class MinHeap<T>
+        : IMinHeap<T>
     {
         private readonly List<T> _heap;
         private readonly IComparer<T> _comparer;
 
         /// <summary>
-        /// 
+        /// Get the number of items in this heap
         /// </summary>
-        public int Count { get {return _heap.Count; }
-    }
+        public int Count
+        {
+            get { return _heap.Count; }
+        }
 
-    /// <summary>
-        /// 
+        /// <summary>
+        /// Get the minimum value in this heap
         /// </summary>
         public T Minimum
         {
@@ -31,7 +33,7 @@ namespace HandyCollections.Heap
         /// 
         /// </summary>
         public MinHeap()
-            :this(100, Comparer<T>.Default)
+            : this(100, Comparer<T>.Default)
         {
         }
 
@@ -46,6 +48,11 @@ namespace HandyCollections.Heap
             _comparer = comparer;
         }
 
+        public MinHeap(int capacity, Comparison<T> comparison)
+            : this(capacity, Comparer<T>.Create(comparison))
+        {
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -53,12 +60,29 @@ namespace HandyCollections.Heap
         /// <exception cref="NotImplementedException"></exception>
         public void Add(T item)
         {
-            AssertHeapProperty();
+            DebugAssertHeapProperty();
 
             _heap.Add(item);
             BubbleUp(_heap.Count - 1);
 
-            AssertHeapProperty();
+            DebugAssertHeapProperty();
+        }
+
+        /// <summary>
+        /// Add a large number of items to the heap. This is more efficient that simply calling add on each item individually
+        /// </summary>
+        /// <param name="items"></param>
+        public void Add(IEnumerable<T> items)
+        {
+            DebugAssertHeapProperty();
+
+            _heap.AddRange(items);
+
+            //todo: simply sorting the heap is cheating - and more expensive that using the proper heapify algorithm!
+            _heap.Sort(_comparer);
+
+            DebugAssertHeapProperty();
+
         }
 
         private void BubbleUp(int index)
@@ -102,7 +126,7 @@ namespace HandyCollections.Heap
 
             var removed = _heap[index];
 
-            AssertHeapProperty();
+            DebugAssertHeapProperty();
 
             _heap[index] = _heap[_heap.Count - 1];
             _heap.RemoveAt(_heap.Count - 1);
@@ -110,7 +134,7 @@ namespace HandyCollections.Heap
             if (_heap.Count > 0 && index < _heap.Count)
                 BubbleUp(TrickleDown(index));
 
-            AssertHeapProperty();
+            DebugAssertHeapProperty();
 
             return removed;
         }
@@ -128,12 +152,12 @@ namespace HandyCollections.Heap
             return TrickleDown(smallestChildIndex);
         }
 
-        private void AssertHeapProperty()
+        private void DebugAssertHeapProperty()
         {
 #if DEBUG
-            //for (int i = 0; i < _heap.Count; i++)
-            //    if (IsLessThan(_heap[i], Minimum))
-            //        throw new Exception("Heap property violated");
+    //for (int i = 0; i < _heap.Count; i++)
+    //    if (IsLessThan(_heap[i], Minimum))
+    //        throw new Exception("Heap property violated");
 #endif
         }
 
@@ -149,7 +173,7 @@ namespace HandyCollections.Heap
 
         private static int ParentIndex(int i)
         {
-            return (i - 1 ) / 2;
+            return (i - 1) / 2;
         }
 
         private void Swap(int a, int b)
@@ -200,10 +224,19 @@ namespace HandyCollections.Heap
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public int IndexOf(Predicate<T> predicate)
+        {
+            return _heap.FindIndex(predicate);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public void Clear()
         {
             _heap.Clear();
         }
     }
 }
-

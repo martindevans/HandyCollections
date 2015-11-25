@@ -9,7 +9,7 @@
 //    /// </summary>
 //    /// <typeparam name="T"></typeparam>
 //    public class MinMaxMedianHeap<T>
-//        : ICollection<T>
+//        : ICollection<T>, IMinHeap<T>
 //    {
 //        #region fields and properties
 //        private readonly MinMaxHeap<T> _lesserOrEqual;

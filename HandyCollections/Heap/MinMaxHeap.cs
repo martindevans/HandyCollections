@@ -9,7 +9,7 @@
 //    /// </summary>
 //    /// <typeparam name="T"></typeparam>
 //    public class MinMaxHeap<T>
-//        :ICollection<T>
+//        :ICollection<T>, IMinHeap<T>
 //    {
 //        #region fields and properties
 //        private readonly List<T> _heap;
