@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace HandyCollections.Extensions
@@ -88,10 +89,10 @@ namespace HandyCollections.Extensions
         /// <returns>the new index of the pivot</returns>
         public static int Partition<T>(this IList<T> list, IComparer<T> comparer, int left, int right, int pivotIndex)
         {
-            T pivotValue = list[pivotIndex];
+            var pivotValue = list[pivotIndex];
             list.Swap(pivotIndex, right);
-            int storeIndex = left;
-            for (int i = left; i < right; i++)
+            var storeIndex = left;
+            for (var i = left; i < right; i++)
             {
                 if (comparer.Compare(list[i], pivotValue) < 0)
                 {
@@ -101,6 +102,27 @@ namespace HandyCollections.Extensions
             }
             list.Swap(storeIndex, right);
             return storeIndex;
+        }
+
+        public static int Partition<T>(this IList<T> list, Func<T, bool> predicate, int left, int right)
+        {
+            //Close in two indices until they overlap
+            while (left != right) {
+
+                //Sweep up left hand side, looking for something which needs swapping
+                while (left < right && predicate(list[left]))
+                    left++;
+
+                //Sweep down right hand side looking for something which needs swapping
+                while (right > left && !predicate(list[right]))
+                    right--;
+
+                //Swap them!
+                if (left < right)
+                    Swap(list, left, right);
+            };
+
+            return left;
         }
 
         /// <summary>

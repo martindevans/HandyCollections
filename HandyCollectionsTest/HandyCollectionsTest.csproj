@@ -58,6 +58,7 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\IListExtensionsTest.cs" />
     <Compile Include="BinaryTreeTest.cs" />
     <Compile Include="BloomFilterTest.cs" />
     <Compile Include="Extensions.cs" />
