@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
+#if DEBUG
+using System.Linq;
+#endif
+
 namespace HandyCollections.Heap
 {
     /// <summary>
@@ -10,6 +14,7 @@ namespace HandyCollections.Heap
     public class MinHeap<T>
         : IMinHeap<T>
     {
+#region fields and properties
         private readonly List<T> _heap;
         private readonly IComparer<T> _comparer;
 
@@ -28,7 +33,9 @@ namespace HandyCollections.Heap
         {
             get { return _heap[0]; }
         }
+#endregion
 
+#region constructors
         /// <summary>
         /// 
         /// </summary>
@@ -52,7 +59,9 @@ namespace HandyCollections.Heap
             : this(capacity, Comparer<T>.Create(comparison))
         {
         }
+#endregion
 
+#region add
         /// <summary>
         /// 
         /// </summary>
@@ -60,12 +69,10 @@ namespace HandyCollections.Heap
         /// <exception cref="NotImplementedException"></exception>
         public void Add(T item)
         {
-            DebugAssertHeapProperty();
-
             _heap.Add(item);
             BubbleUp(_heap.Count - 1);
 
-            DebugAssertHeapProperty();
+            DebugCheckHeapProperty();
         }
 
         /// <summary>
@@ -74,32 +81,30 @@ namespace HandyCollections.Heap
         /// <param name="items"></param>
         public void Add(IEnumerable<T> items)
         {
-            DebugAssertHeapProperty();
-
             _heap.AddRange(items);
+            Heapify();
 
-            //todo: simply sorting the heap is cheating - and more expensive that using the proper heapify algorithm!
-            _heap.Sort(_comparer);
-
-            DebugAssertHeapProperty();
-
+            DebugCheckHeapProperty();
         }
 
-        private void BubbleUp(int index)
+        /// <summary>
+        /// Establish the heap property (use this if you mutate an item already in the heap)
+        /// </summary>
+        public void Heapify()
         {
-            while (index > 0)
-            {
-                int parent = ParentIndex(index);
-                if (IsLessThan(_heap[index], _heap[parent]))
-                {
-                    Swap(parent, index);
-                    index = parent;
-                }
-                else
-                    break;
-            }
-        }
+            // Using sorting is tempting, for it's sheer simplicity:
+            //    _heap.Sort(_comparer);
+            // There's also the possibility the framework implemented sorting algorithm is way better/faster than my heapify function in practical cases (despite being algorithmically worse)
+            // Benchmarking reveals sorting to *always* be slower, on both tiny heaps (10 items) and massive heaps (1000000 items)
 
+            for (var i = _heap.Count - 1; i >= 0; i--)
+                BubbleUp(TrickleDown(i));
+
+            DebugCheckHeapProperty();
+        }
+#endregion
+
+#region remove
         /// <summary>
         /// 
         /// </summary>
@@ -122,11 +127,9 @@ namespace HandyCollections.Heap
             if (_heap.Count == 0)
                 throw new InvalidOperationException("Heap is empty");
             if (index < 0 || index > _heap.Count)
-                throw new ArgumentOutOfRangeException("index");
+                throw new ArgumentOutOfRangeException(nameof(index));
 
             var removed = _heap[index];
-
-            DebugAssertHeapProperty();
 
             _heap[index] = _heap[_heap.Count - 1];
             _heap.RemoveAt(_heap.Count - 1);
@@ -134,41 +137,74 @@ namespace HandyCollections.Heap
             if (_heap.Count > 0 && index < _heap.Count)
                 BubbleUp(TrickleDown(index));
 
-            DebugAssertHeapProperty();
+            DebugCheckHeapProperty();
 
             return removed;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Clear()
+        {
+            _heap.Clear();
+        }
+#endregion
+
+#region private helpers
+        private void BubbleUp(int index)
+        {
+            while (index > 0)
+            {
+                var parent = ParentIndex(index);
+                if (IsLessThan(_heap[index], _heap[parent]))
+                {
+                    Swap(parent, index);
+                    index = parent;
+                }
+                else
+                    break;
+            }
+        }
+
         private int TrickleDown(int index)
         {
-            if (index >= _heap.Count)
+            // This code was automatically converted to iteration instead of tail recursion
+            // WTB C# tail call keyword!
+            /* if (index >= _heap.Count)
                 throw new ArgumentException();
-
             int smallestChildIndex = SmallestChildSmallerThan(index, _heap[index]);
             if (smallestChildIndex == -1)
                 return index;
-
             Swap(smallestChildIndex, index);
-            return TrickleDown(smallestChildIndex);
+            return TrickleDown(smallestChildIndex); */
+
+            while (true)
+            {
+                if (index >= _heap.Count)
+                    throw new ArgumentException();
+
+                var smallestChildIndex = SmallestChildSmallerThan(index, _heap[index]);
+                if (smallestChildIndex == -1)
+                    return index;
+
+                Swap(smallestChildIndex, index);
+                index = smallestChildIndex;
+            }
         }
 
-        private void DebugAssertHeapProperty()
+        // ReSharper disable once MemberCanBeMadeStatic.Local
+        private void DebugCheckHeapProperty()
         {
 #if DEBUG
-    //for (int i = 0; i < _heap.Count; i++)
-    //    if (IsLessThan(_heap[i], Minimum))
-    //        throw new Exception("Heap property violated");
+            if (_heap.Any(t => IsLessThan(t, Minimum)))
+                throw new Exception("Heap property violated");
 #endif
         }
 
         private bool IsLessThan(T a, T b)
         {
             return _comparer.Compare(a, b) < 0;
-        }
-
-        private bool IsEqualTo(T a, T b)
-        {
-            return _comparer.Compare(a, b) == 0;
         }
 
         private static int ParentIndex(int i)
@@ -178,28 +214,28 @@ namespace HandyCollections.Heap
 
         private void Swap(int a, int b)
         {
-            T temp = _heap[a];
+            var temp = _heap[a];
             _heap[a] = _heap[b];
             _heap[b] = temp;
         }
 
-        private int LeftChild(int i)
+        private static int LeftChild(int i)
         {
             return 2 * i + 1;
         }
 
-        private int RightChild(int i)
+        private static int RightChild(int i)
         {
             return 2 * i + 2;
         }
 
         private int SmallestChildSmallerThan(int i, T item)
         {
-            int leftChildIndex = LeftChild(i);
+            var leftChildIndex = LeftChild(i);
 
-            int rightChildIndex = RightChild(i);
+            var rightChildIndex = RightChild(i);
 
-            int smallest = -1;
+            var smallest = -1;
             if (leftChildIndex < _heap.Count)
                 smallest = leftChildIndex;
             if (rightChildIndex < _heap.Count && IsLessThan(_heap[rightChildIndex], _heap[leftChildIndex]))
@@ -210,7 +246,9 @@ namespace HandyCollections.Heap
 
             return -1;
         }
+#endregion
 
+#region searching
         /// <summary>
         /// 
         /// </summary>
@@ -230,13 +268,6 @@ namespace HandyCollections.Heap
         {
             return _heap.FindIndex(predicate);
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Clear()
-        {
-            _heap.Clear();
-        }
+#endregion
     }
 }
