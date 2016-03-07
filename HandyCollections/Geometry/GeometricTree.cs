@@ -57,6 +57,11 @@ namespace HandyCollections.Geometry
         #endregion
 
         #region remove
+        public void Clear()
+        {
+            _root.Clear();
+        }
+
         public bool Remove(TBound bounds, TItem item)
         {
             return _root.Remove(bounds, item);
@@ -208,6 +213,14 @@ namespace HandyCollections.Geometry
                 }
 
                 return removed;
+            }
+
+            public void Clear()
+            {
+                Children = null;
+
+                Items.Clear();
+                Items.Capacity = 4;
             }
         }
 
