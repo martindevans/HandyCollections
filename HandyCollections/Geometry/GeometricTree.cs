@@ -10,6 +10,8 @@ namespace HandyCollections.Geometry
         private readonly int _threshold;
         private readonly Node _root;
 
+        public TBound Bounds => _root.Bounds;
+
         /// <summary>
         /// 
         /// </summary>
@@ -26,12 +28,15 @@ namespace HandyCollections.Geometry
 
         protected abstract TBound[] Split(TBound bound);
 
+        #region add
         public void Insert(TBound bounds, TItem item)
         {
             var a = new Member { Bounds = bounds, Value = item };
             _root.Insert(a, _threshold);
         }
+        #endregion
 
+        #region query
         public IEnumerable<TItem> Intersects(TBound bounds)
         {
             foreach (var item in _root.Intersects(bounds))
@@ -47,7 +52,9 @@ namespace HandyCollections.Geometry
                     yield return item.Value;
             }
         }
+        #endregion
 
+        #region remove
         public bool Remove(TBound bounds, TItem item)
         {
             return _root.Remove(bounds, item);
@@ -57,37 +64,39 @@ namespace HandyCollections.Geometry
         {
             return _root.Remove(bounds, pred);
         }
+        #endregion
 
+        #region helper types
         private class Node
         {
             private readonly List<Member> _items = new List<Member>();
 
             private readonly GeometricTree<TItem, TVector, TBound> _tree;
-            private readonly TBound _bounds;
+            public readonly TBound Bounds;
             private Node[] _children;
 
             public Node(GeometricTree<TItem, TVector, TBound> tree, TBound bounds)
             {
                 _tree = tree;
-                _bounds = bounds;
+                Bounds = bounds;
             }
 
             private void Split(int splitThreshold)
             {
-                var bounds = _tree.Split(_bounds);
+                var bounds = _tree.Split(Bounds);
 
                 _children = new Node[bounds.Length];
-                for (int i = 0; i < bounds.Length; i++)
+                for (var i = 0; i < bounds.Length; i++)
                     _children[i] = new Node(_tree, bounds[i]);
 
-                for (int i = _items.Count - 1; i >= 0; i--)
+                for (var i = _items.Count - 1; i >= 0; i--)
                 {
                     var item = _items[i];
 
                     //Try to insert this item into each child (if successful, it's removed from this node)
-                    foreach (Node child in _children)
+                    foreach (var child in _children)
                     {
-                        var cb = child._bounds;
+                        var cb = child.Bounds;
                         if (_tree.Contains(cb, ref item.Bounds))
                         {
                             child.Insert(item, splitThreshold);
@@ -112,7 +121,7 @@ namespace HandyCollections.Geometry
                     //Try to put this item into a child node
                     foreach (var child in _children)
                     {
-                        var cb = child._bounds;
+                        var cb = child.Bounds;
                         if (_tree.Contains(cb, ref m.Bounds))
                         {
                             child.Insert(m, splitThreshold);
@@ -127,7 +136,7 @@ namespace HandyCollections.Geometry
 
             public IEnumerable<Member> Intersects(TBound bounds)
             {
-                List<Node> nodes = new List<Node>(50) { this };
+                var nodes = new List<Node>(50) { this };
 
                 while (nodes.Count > 0)
                 {
@@ -136,7 +145,7 @@ namespace HandyCollections.Geometry
                     nodes.RemoveAt(nodes.Count - 1);
 
                     //Skip nodes we do not intersect
-                    if (!_tree.Intersects(n._bounds, ref bounds))
+                    if (!_tree.Intersects(n.Bounds, ref bounds))
                         continue;
 
                     //yield items as appropriate
@@ -166,7 +175,7 @@ namespace HandyCollections.Geometry
 
             private bool RemoveRecursive(TBound bounds, Predicate<Member> predicate)
             {
-                if (!_tree.Intersects(_bounds, ref bounds))
+                if (!_tree.Intersects(Bounds, ref bounds))
                     return false;
 
                 var index = _items.FindIndex(predicate);
@@ -194,5 +203,6 @@ namespace HandyCollections.Geometry
             public TItem Value;
             public TBound Bounds;
         }
+        #endregion
     }
 }

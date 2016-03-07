@@ -24,14 +24,14 @@ namespace HandyCollections.Geometry
 
         protected override BoundingRectangle[] Split(BoundingRectangle bound)
         {
-            BoundingRectangle[] bounds = new BoundingRectangle[4];
+            var bounds = new BoundingRectangle[4];
             var min = bound.Min;
             var size = (bound.Max - bound.Min) / 2f;
 
-            int i = 0;
-            for (int x = 0; x < 2; x++)
+            var i = 0;
+            for (var x = 0; x < 2; x++)
             {
-                for (int y = 0; y < 2; y++)
+                for (var y = 0; y < 2; y++)
                 {
                     var positionOffset = size * new Vector2(x, y);
                     bounds[i++] = new BoundingRectangle(min + positionOffset, min + size + positionOffset);
