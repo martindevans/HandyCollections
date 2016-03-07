@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace HandyCollections.Geometry
 {
     public abstract class GeometricTree<TItem, TVector, TBound>
+        : IEnumerable<KeyValuePair<TBound, TItem>>
         where TVector : struct
         where TBound : struct
     {
@@ -69,11 +71,11 @@ namespace HandyCollections.Geometry
         #region helper types
         private class Node
         {
-            private readonly List<Member> _items = new List<Member>();
+            public readonly List<Member> Items = new List<Member>();
+            public readonly TBound Bounds;
+            public Node[] Children;
 
             private readonly GeometricTree<TItem, TVector, TBound> _tree;
-            public readonly TBound Bounds;
-            private Node[] _children;
 
             public Node(GeometricTree<TItem, TVector, TBound> tree, TBound bounds)
             {
@@ -85,22 +87,22 @@ namespace HandyCollections.Geometry
             {
                 var bounds = _tree.Split(Bounds);
 
-                _children = new Node[bounds.Length];
+                Children = new Node[bounds.Length];
                 for (var i = 0; i < bounds.Length; i++)
-                    _children[i] = new Node(_tree, bounds[i]);
+                    Children[i] = new Node(_tree, bounds[i]);
 
-                for (var i = _items.Count - 1; i >= 0; i--)
+                for (var i = Items.Count - 1; i >= 0; i--)
                 {
-                    var item = _items[i];
+                    var item = Items[i];
 
                     //Try to insert this item into each child (if successful, it's removed from this node)
-                    foreach (var child in _children)
+                    foreach (var child in Children)
                     {
                         var cb = child.Bounds;
                         if (_tree.Contains(cb, ref item.Bounds))
                         {
                             child.Insert(item, splitThreshold);
-                            _items.RemoveAt(i);
+                            Items.RemoveAt(i);
                             break;
                         }
                     }
@@ -109,17 +111,17 @@ namespace HandyCollections.Geometry
 
             public void Insert(Member m, int splitThreshold)
             {
-                if (_children == null)
+                if (Children == null)
                 {
-                    _items.Add(m);
+                    Items.Add(m);
 
-                    if (_items.Count > splitThreshold)
+                    if (Items.Count > splitThreshold)
                         Split(splitThreshold);
                 }
                 else
                 {
                     //Try to put this item into a child node
-                    foreach (var child in _children)
+                    foreach (var child in Children)
                     {
                         var cb = child.Bounds;
                         if (_tree.Contains(cb, ref m.Bounds))
@@ -130,7 +132,7 @@ namespace HandyCollections.Geometry
                     }
 
                     //Failed! Can't find a child to contain this, store it here instead
-                    _items.Add(m);
+                    Items.Add(m);
                 }
             }
 
@@ -149,13 +151,13 @@ namespace HandyCollections.Geometry
                         continue;
 
                     //yield items as appropriate
-                    foreach (var member in n._items)
+                    foreach (var member in n.Items)
                         if (_tree.Intersects(member.Bounds, ref bounds))
                             yield return member;
 
                     //push children onto stack to be checked
-                    if (n._children != null)
-                        nodes.AddRange(n._children);
+                    if (n.Children != null)
+                        nodes.AddRange(n.Children);
                 }
             }
 
@@ -163,38 +165,49 @@ namespace HandyCollections.Geometry
             {
                 var pred = new Predicate<Member>(a => a.Value.Equals(item));
 
-                return RemoveRecursive(bounds, pred);
+                return RemoveRecursive(bounds, pred, true);
             }
 
             public bool Remove(TBound bounds, Predicate<TItem> pred)
             {
                 var predInner = new Predicate<Member>(a => pred(a.Value));
 
-                return RemoveRecursive(bounds, predInner);
+                return RemoveRecursive(bounds, predInner, false);
             }
 
-            private bool RemoveRecursive(TBound bounds, Predicate<Member> predicate)
+            private bool RemoveRecursive(TBound bounds, Predicate<Member> predicate, bool removeSingle)
             {
                 if (!_tree.Intersects(Bounds, ref bounds))
                     return false;
 
-                var index = _items.FindIndex(predicate);
-                if (index != -1)
+                bool removed = false;
+
+                if (removeSingle)
                 {
-                    _items.RemoveAt(index);
-                    return true;
+                    //We're removing a single item, so find it and exit as soon as we do
+                    var index = Items.FindIndex(predicate);
+                    if (index != -1)
+                    {
+                        Items.RemoveAt(index);
+                        return true;
+                    }
+                }
+                else
+                {
+                    //We're removing all predicate matches
+                    removed = Items.RemoveAll(predicate) > 0;
                 }
 
-                if (_children != null)
+                if (Children != null)
                 {
-                    foreach (var child in _children)
+                    foreach (var child in Children)
                     {
-                        if (child.RemoveRecursive(bounds, predicate))
-                            return true;
+                        if (child.RemoveRecursive(bounds, predicate, removeSingle))
+                            removed = true;
                     }
                 }
 
-                return false;
+                return removed;
             }
         }
 
@@ -202,6 +215,31 @@ namespace HandyCollections.Geometry
         {
             public TItem Value;
             public TBound Bounds;
+        }
+        #endregion
+
+        #region enumeration
+        public IEnumerator<KeyValuePair<TBound, TItem>> GetEnumerator()
+        {
+            var nodes = new List<Node>() { _root };
+            while (nodes.Count > 0)
+            {
+                var n = nodes[nodes.Count - 1];
+                nodes.RemoveAt(nodes.Count - 1);
+                if (n == null)
+                    continue;
+
+                foreach (var item in n.Items)
+                    yield return new KeyValuePair<TBound, TItem>(item.Bounds, item.Value);
+
+                if (n.Children != null)
+                    nodes.AddRange(n.Children);
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
         #endregion
     }
