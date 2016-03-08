@@ -13,6 +13,7 @@ namespace HandyCollections.Geometry
         private readonly Node _root;
 
         public TBound Bounds => _root.Bounds;
+        public int Count { get; private set; }
 
         /// <summary>
         /// 
@@ -35,6 +36,8 @@ namespace HandyCollections.Geometry
         {
             var a = new Member { Bounds = bounds, Value = item };
             _root.Insert(a, _threshold);
+
+            Count++;
         }
         #endregion
 
@@ -60,16 +63,21 @@ namespace HandyCollections.Geometry
         public void Clear()
         {
             _root.Clear();
+            Count = 0;
         }
 
         public bool Remove(TBound bounds, TItem item)
         {
-            return _root.Remove(bounds, item);
+            int count = _root.Remove(bounds, item);
+            Count -= count;
+            return count > 0;
         }
 
         public bool Remove(TBound bounds, Predicate<TItem> pred)
         {
-            return _root.Remove(bounds, pred);
+            int count = _root.Remove(bounds, pred);
+            Count -= count;
+            return count > 0;
         }
         #endregion
 
@@ -166,49 +174,55 @@ namespace HandyCollections.Geometry
                 }
             }
 
-            public bool Remove(TBound bounds, TItem item)
+            public int Remove(TBound bounds, TItem item)
             {
                 var pred = new Predicate<Member>(a => a.Value.Equals(item));
 
                 return RemoveRecursive(bounds, pred, true);
             }
 
-            public bool Remove(TBound bounds, Predicate<TItem> pred)
+            public int Remove(TBound bounds, Predicate<TItem> pred)
             {
                 var predInner = new Predicate<Member>(a => pred(a.Value));
 
                 return RemoveRecursive(bounds, predInner, false);
             }
 
-            private bool RemoveRecursive(TBound bounds, Predicate<Member> predicate, bool removeSingle)
+            private int RemoveRecursive(TBound bounds, Predicate<Member> predicate, bool removeSingle)
             {
-                if (!_tree.Intersects(Bounds, ref bounds))
-                    return false;
+                //We want to skip this node if the boundary doesn't intersect it... unless it's the root which can contain items outside it's boundary!
+                if (!_tree.Intersects(Bounds, ref bounds) && !_tree._root.Equals(this))
+                    return 0;
 
-                bool removed = false;
+                int removed = 0;
 
+                //Either we're removing the first item which matches the predicate, or all items which match
                 if (removeSingle)
                 {
-                    //We're removing a single item, so find it and exit as soon as we do
+                    // Find single item and remove it, then exit instantly
                     var index = Items.FindIndex(predicate);
                     if (index != -1)
                     {
                         Items.RemoveAt(index);
-                        return true;
+                        return 1;
                     }
                 }
                 else
                 {
                     //We're removing all predicate matches
-                    removed = Items.RemoveAll(predicate) > 0;
+                    removed += Items.RemoveAll(predicate);
                 }
 
+                //Remove items from children (and aggregate total removed count)
                 if (Children != null)
                 {
                     foreach (var child in Children)
                     {
-                        if (child.RemoveRecursive(bounds, predicate, removeSingle))
-                            removed = true;
+                        removed += child.RemoveRecursive(bounds, predicate, removeSingle);
+
+                        //Early exit if we can
+                        if (removed > 0 && removeSingle)
+                            return removed;
                     }
                 }
 

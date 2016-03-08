@@ -23,6 +23,7 @@ namespace HandyCollectionsTest
         {
             _octree.Insert(new BoundingBox(new Vector3(1), new Vector3(2)), "hello");
             _octree.Insert(new BoundingBox(new Vector3(8), new Vector3(9)), "world");
+            Assert.AreEqual(2, _octree.Count);
 
             Assert.AreEqual("hello", _octree.ContainedBy(new BoundingBox(new Vector3(0), new Vector3(3))).Single());
         }
@@ -33,9 +34,9 @@ namespace HandyCollectionsTest
             _octree.Insert(new BoundingBox(new Vector3(1), new Vector3(2)), "hello");
             _octree.Insert(new BoundingBox(new Vector3(2), new Vector3(3)), "world");
             _octree.Insert(new BoundingBox(new Vector3(3), new Vector3(4)), "こにちは");
+            Assert.AreEqual(3, _octree.Count);
 
             var items = _octree.Intersects(new BoundingBox(new Vector3(2.5f), new Vector3(4.5f))).ToArray();
-
             Assert.AreEqual(2, items.Length);
 
             Assert.IsFalse(items.Contains("hello"));
@@ -49,9 +50,11 @@ namespace HandyCollectionsTest
             //Add 2 items
             _octree.Insert(new BoundingBox(new Vector3(2), new Vector3(3)), "world");
             _octree.Insert(new BoundingBox(new Vector3(3), new Vector3(4)), "こにちは");
+            Assert.AreEqual(2, _octree.Count);
 
             //Remove one of them
             _octree.Remove(new BoundingBox(Vector3.Zero, new Vector3(10)), "こにちは");
+            Assert.AreEqual(1, _octree.Count);
 
             //This bounds would return *both* items if the removal was not there
             var items = _octree.Intersects(new BoundingBox(new Vector3(2.5f), new Vector3(4.5f))).ToArray();
@@ -69,9 +72,11 @@ namespace HandyCollectionsTest
             _octree.Insert(new BoundingBox(new Vector3(1), new Vector3(2)), "hello");
             _octree.Insert(new BoundingBox(new Vector3(2), new Vector3(3)), "world");
             _octree.Insert(new BoundingBox(new Vector3(3), new Vector3(4)), "こにちは");
+            Assert.AreEqual(3, _octree.Count);
 
             //Remove all but one
             _octree.Remove(new BoundingBox(new Vector3(0), new Vector3(100)), a => a != "world");
+            Assert.AreEqual(1, _octree.Count);
 
             var items = _octree.Intersects(new BoundingBox(new Vector3(2.5f), new Vector3(4.5f))).ToArray();
 
@@ -87,14 +92,29 @@ namespace HandyCollectionsTest
         {
             //Insert item out of bounds
             _octree.Insert(new BoundingBox(new Vector3(-1), new Vector3(-2)), "hello");
+            Assert.AreEqual(1, _octree.Count);
 
-            //Inser items in bounds
+            //Insert items in bounds
             _octree.Insert(new BoundingBox(new Vector3(20), new Vector3(30)), "world");
             _octree.Insert(new BoundingBox(new Vector3(300), new Vector3(400)), "こにちは");
+            Assert.AreEqual(3, _octree.Count);
 
             //Enumerate and check we have all items
             var items = _octree.ToArray();
             Assert.AreEqual(3, items.Length);
+        }
+
+        [TestMethod]
+        public void AssertThat_RemovingItemsOutsideBoundary_RemovesItems()
+        {
+            _octree.Insert(new BoundingBox(new Vector3(-3), new Vector3(-4)), "hello");
+            _octree.Insert(new BoundingBox(new Vector3(20), new Vector3(30)), "world");
+            Assert.AreEqual(2, _octree.Count);
+
+            _octree.Remove(new BoundingBox(new Vector3(-10), new Vector3(-1)), "hello");
+            Assert.AreEqual(1, _octree.Count);
+
+            Assert.AreEqual(1, _octree.Count);
         }
 
         [TestMethod]
