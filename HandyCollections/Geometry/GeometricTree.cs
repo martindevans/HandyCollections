@@ -153,14 +153,15 @@ namespace HandyCollections.Geometry
             {
                 var nodes = new List<Node>(50) { this };
 
+                var root = true;
                 while (nodes.Count > 0)
                 {
                     //Remove node
                     var n = nodes[nodes.Count - 1];
                     nodes.RemoveAt(nodes.Count - 1);
 
-                    //Skip nodes we do not intersect
-                    if (!_tree.Intersects(n.Bounds, ref bounds))
+                    //Skip nodes we do not intersect (unless this is the root, in which case we always want to check it)
+                    if (!root && !_tree.Intersects(n.Bounds, ref bounds))
                         continue;
 
                     //yield items as appropriate
@@ -171,6 +172,8 @@ namespace HandyCollections.Geometry
                     //push children onto stack to be checked
                     if (n.Children != null)
                         nodes.AddRange(n.Children);
+
+                    root = false;
                 }
             }
 
