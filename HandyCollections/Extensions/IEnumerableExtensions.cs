@@ -19,7 +19,7 @@ namespace HandyCollections.Extensions
         /// <param name="start">The start.</param>
         /// <param name="end">The end.</param>
         /// <returns></returns>
-        [Obsolete]
+        [Pure, Obsolete]
         public static IEnumerable<T> Append<T>(this IEnumerable<T> start, IEnumerable<T> end)
         {
             foreach (var item in start)
@@ -36,6 +36,7 @@ namespace HandyCollections.Extensions
         /// <param name="start">The start.</param>
         /// <param name="end">The end.</param>
         /// <returns></returns>
+        [Pure]
         public static IEnumerable<T> Append<T>(this IEnumerable<T> start, params T[] end)
         {
             return start.Concat(end);
@@ -49,6 +50,7 @@ namespace HandyCollections.Extensions
         /// <returns>
         /// 	<c>true</c> if the specified enumerable is empty; otherwise, <c>false</c>.
         /// </returns>
+        [Pure]
         public static bool IsEmpty<T>(this IEnumerable<T> enumerable)
         {
             return !enumerable.Any();
@@ -61,6 +63,7 @@ namespace HandyCollections.Extensions
         /// <param name="items"></param>
         /// <param name="value"></param>
         /// <returns></returns>
+        [Pure]
         public static T MaxItem<T>(this IEnumerable<T> items, Func<T, float> value)
         {
             Contract.Requires(items != null);
@@ -89,6 +92,7 @@ namespace HandyCollections.Extensions
         /// <param name="items"></param>
         /// <param name="value"></param>
         /// <returns></returns>
+        [Pure]
         public static T MinItem<T>(this IEnumerable<T> items, Func<T, float> value)
         {
             Contract.Requires(items != null);
