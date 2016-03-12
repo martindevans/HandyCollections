@@ -61,7 +61,7 @@ namespace HandyCollections.Extensions
         /// <param name="items"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static T Max<T>(this IEnumerable<T> items, Func<T, float> value)
+        public static T MaxItem<T>(this IEnumerable<T> items, Func<T, float> value)
         {
             Contract.Requires(items != null);
             Contract.Requires(value != null);
@@ -89,12 +89,12 @@ namespace HandyCollections.Extensions
         /// <param name="items"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static T Min<T>(this IEnumerable<T> items, Func<T, float> value)
+        public static T MinItem<T>(this IEnumerable<T> items, Func<T, float> value)
         {
             Contract.Requires(items != null);
             Contract.Requires(value != null);
 
-            return items.Max(a => -value(a));
+            return items.MaxItem(a => -value(a));
         }
     }
 }
