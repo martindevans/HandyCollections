@@ -14,7 +14,7 @@ namespace HandyCollections.Heap
     public class MinHeap<T>
         : IMinHeap<T>
     {
-#region fields and properties
+        #region fields and properties
         private readonly List<T> _heap;
         private readonly IComparer<T> _comparer;
 
@@ -33,9 +33,9 @@ namespace HandyCollections.Heap
         {
             get { return _heap[0]; }
         }
-#endregion
+        #endregion
 
-#region constructors
+        #region constructors
         /// <summary>
         /// 
         /// </summary>
@@ -55,13 +55,37 @@ namespace HandyCollections.Heap
             _comparer = comparer;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="capacity"></param>
+        /// <param name="comparison"></param>
         public MinHeap(int capacity, Comparison<T> comparison)
             : this(capacity, Comparer<T>.Create(comparison))
         {
         }
-#endregion
 
-#region add
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="comparer"></param>
+        public MinHeap(IComparer<T> comparer)
+        {
+            _heap = new List<T>();
+            _comparer = comparer;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="comparison"></param>
+        public MinHeap(Comparison<T> comparison)
+            : this(Comparer<T>.Create(comparison))
+        {
+        }
+        #endregion
+
+        #region add
         /// <summary>
         /// 
         /// </summary>

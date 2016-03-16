@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using HandyCollections.Heap;
 
 namespace HandyCollections.Extensions
 {
@@ -99,6 +101,17 @@ namespace HandyCollections.Extensions
             Contract.Requires(value != null);
 
             return items.MaxItem(a => -value(a));
+        }
+
+        public static IMinHeap<KeyValuePair<float, T>> ToMinHeap<T>(this IEnumerable<T> items, Func<T, float> key)
+        {
+            //Create a heap which order on the key of a KVP
+            IMinHeap<KeyValuePair<float, T>> heap = new MinHeap<KeyValuePair<float, T>>((a, b) => a.Key.CompareTo(b.Key));
+
+            //Add all the items in bulk
+            heap.Add(items.Select(item => new KeyValuePair<float, T>(key(item), item)));
+
+            return heap;
         }
     }
 }

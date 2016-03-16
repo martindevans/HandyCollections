@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
-using System.Linq;
 using HandyCollections.Heap;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -13,7 +11,7 @@ namespace HandyCollectionsTest
         [TestMethod]
         public void AddItemToMinHeapCorrectlyUpdatesMinimum()
         {
-            MinHeap<int> heap = new MinHeap<int>();
+            IMinHeap<int> heap = new MinHeap<int>();
 
             heap.Add(5);
             Assert.AreEqual(5, heap.Minimum);
@@ -28,7 +26,7 @@ namespace HandyCollectionsTest
         [TestMethod]
         public void RemoveItemsFromMinHeapCorrectlyUpdatesMinimum()
         {
-            MinHeap<int> heap = new MinHeap<int>();
+            IMinHeap<int> heap = new MinHeap<int>();
 
             heap.Add(5);
             heap.Add(3);
@@ -46,7 +44,7 @@ namespace HandyCollectionsTest
                 12,12,12,12,12,12,13,12,13,11,12,12,13,12,12,12,13,13,12,13,13,13,12,12,13,12,13,12,13,13,12,14,12,12,13,12,12,13,13,12,14,13,12,12,13,13,13,13,13,13,13,12,13,13,14,13,13,13,13,13,
             };
 
-            MinHeap<int> heap = new MinHeap<int>(100, Comparer<int>.Default);
+            IMinHeap<int> heap = new MinHeap<int>(100, Comparer<int>.Default);
             foreach (var number in numbers)
                 heap.Add(number);
             while (heap.Count > 0)
@@ -60,7 +58,7 @@ namespace HandyCollectionsTest
                 1, 2, 5, 213, 25, 3, 2, 5, 3, 2, 45, 2, 5, 2, 2, 4, 6, 32, 75, 5, 47, 7, 4, 3, 5, 34, 4
             };
 
-            var heap = new MinHeap<int>(100, Comparer<int>.Default);
+            IMinHeap<int> heap = new MinHeap<int>(100, Comparer<int>.Default);
             heap.Add(values);
 
             //Sort values and test that the heap returns them in the same order
