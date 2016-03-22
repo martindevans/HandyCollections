@@ -102,6 +102,7 @@
     <Compile Include="Heap\MinMaxHeap.cs" />
     <Compile Include="Heap\MinMaxMedianHeap.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
+    <Compile Include="RingBuffer.cs" />
     <Compile Include="Set\OrderedSet.cs" />
     <Compile Include="RandomNumber\LinearFeedbackShiftRegister16.cs" />
     <Compile Include="RandomNumber\LinearFeedbackShiftRegister32.cs" />

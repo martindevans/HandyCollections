@@ -69,6 +69,7 @@
     <Compile Include="OctreeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecentlyUsedQueue.cs" />
+    <Compile Include="RingBufferTest.cs" />
     <Compile Include="SplayTreeTest.cs" />
     <Compile Include="TypedWeakReference.cs" />
   </ItemGroup>
