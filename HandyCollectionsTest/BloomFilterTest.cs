@@ -60,18 +60,18 @@ namespace HandyCollectionsTest
         [TestMethod]
         public void RollbackWhenRemovingANonExistantItem()
         {
-            CountingBloomFilter_Accessor<int> a = new CountingBloomFilter_Accessor<int>(1000, 0.01f);
+            var a = new CountingBloomFilter<int>(1000, 0.01f);
 
             for (var i = 0; i < 1000; i++)
                 a.Add(i);
 
-            byte[] copy = (byte[])a._array.Clone();
+            byte[] copy = (byte[])a.Array.Clone();
 
             Assert.IsFalse(a.Remove(1001));
 
-            for (int i = 0; i < a._array.Length; i++)
+            for (int i = 0; i < a.Array.Length; i++)
             {
-                Assert.AreEqual(a._array[i], copy[i]);
+                Assert.AreEqual(a.Array[i], copy[i]);
             }
         }
 

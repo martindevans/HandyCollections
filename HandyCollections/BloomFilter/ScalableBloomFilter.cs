@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace HandyCollections.BloomFilter
 {
@@ -48,6 +47,11 @@ namespace HandyCollections.BloomFilter
             _falsePositiveProbability = falsePositiveProbability;
         }
 
+        /// <summary>
+        /// Add a new item to the filter
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public bool Add(T item)
         {
             if (Contains(item))
@@ -60,11 +64,16 @@ namespace HandyCollections.BloomFilter
             return false;
         }
 
+        /// <summary>
+        /// Test if the filter contains the given item- this is probabilistic
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public bool Contains(T item)
         {
-            for (int i = 0; i < _slices.Count; i++)
+            foreach (var slice in _slices)
             {
-                if (_slices[i].Contains(item))
+                if (slice.Contains(item))
                     return true;
             }
             return false;
@@ -90,6 +99,9 @@ namespace HandyCollections.BloomFilter
             }
         }
 
+        /// <summary>
+        /// Empty the bloom filter and resit to it's initial state
+        /// </summary>
         public void Clear()
         {
             _lastSlice = -1;

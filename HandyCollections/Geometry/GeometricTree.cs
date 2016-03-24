@@ -4,6 +4,12 @@ using System.Collections.Generic;
 
 namespace HandyCollections.Geometry
 {
+    /// <summary>
+    /// Base class for trees with partition space
+    /// </summary>
+    /// <typeparam name="TItem">Items in the tree</typeparam>
+    /// <typeparam name="TVector">Type of vectors</typeparam>
+    /// <typeparam name="TBound">Type of bounds (rectangle or equivalent)</typeparam>
     public abstract class GeometricTree<TItem, TVector, TBound>
         : IEnumerable<KeyValuePair<TBound, TItem>>
         where TVector : struct
@@ -12,7 +18,14 @@ namespace HandyCollections.Geometry
         private readonly int _threshold;
         private readonly Node _root;
 
+        /// <summary>
+        /// The bounds of the root of this tree (inserting outside the root bounds is possible, but inefficient)
+        /// </summary>
         public TBound Bounds => _root.Bounds;
+
+        /// <summary>
+        /// The number of items in the entire tree
+        /// </summary>
         public int Count { get; private set; }
 
         /// <summary>
@@ -26,12 +39,35 @@ namespace HandyCollections.Geometry
             _root = new Node(this, bounds);
         }
 
+        /// <summary>
+        /// Check if the given bound is contained entirely within the other bound
+        /// </summary>
+        /// <param name="container"></param>
+        /// <param name="contained"></param>
+        /// <returns></returns>
         protected abstract bool Contains(TBound container, ref TBound contained);
+
+        /// <summary>
+        /// Check if the given bounds intersects the other bound
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
         protected abstract bool Intersects(TBound a, ref TBound b);
 
+        /// <summary>
+        /// Split the given bound is even parts
+        /// </summary>
+        /// <param name="bound"></param>
+        /// <returns></returns>
         protected abstract TBound[] Split(TBound bound);
 
         #region add
+        /// <summary>
+        /// Insert a new item into the tree
+        /// </summary>
+        /// <param name="bounds"></param>
+        /// <param name="item"></param>
         public void Insert(TBound bounds, TItem item)
         {
             var a = new Member { Bounds = bounds, Value = item };
@@ -42,12 +78,22 @@ namespace HandyCollections.Geometry
         #endregion
 
         #region query
+        /// <summary>
+        /// Find all items which intersect the given bounds
+        /// </summary>
+        /// <param name="bounds"></param>
+        /// <returns></returns>
         public IEnumerable<TItem> Intersects(TBound bounds)
         {
             foreach (var item in _root.Intersects(bounds))
                 yield return item.Value;
         }
 
+        /// <summary>
+        /// Find all items which are completely contained byhe given bound
+        /// </summary>
+        /// <param name="bounds"></param>
+        /// <returns></returns>
         public IEnumerable<TItem> ContainedBy(TBound bounds)
         {
             foreach (var item in _root.Intersects(bounds))
@@ -60,12 +106,21 @@ namespace HandyCollections.Geometry
         #endregion
 
         #region remove
+        /// <summary>
+        /// Remove all items from the tree
+        /// </summary>
         public void Clear()
         {
             _root.Clear();
             Count = 0;
         }
 
+        /// <summary>
+        /// Remove the specific item from the tree
+        /// </summary>
+        /// <param name="bounds">Hint used to find the item</param>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public bool Remove(TBound bounds, TItem item)
         {
             int count = _root.Remove(bounds, item);
@@ -73,6 +128,12 @@ namespace HandyCollections.Geometry
             return count > 0;
         }
 
+        /// <summary>
+        /// Remove *all* items which match the specified predicate which intersect the given bound
+        /// </summary>
+        /// <param name="bounds"></param>
+        /// <param name="pred"></param>
+        /// <returns></returns>
         public bool Remove(TBound bounds, Predicate<TItem> pred)
         {
             int count = _root.Remove(bounds, pred);
@@ -249,6 +310,10 @@ namespace HandyCollections.Geometry
         #endregion
 
         #region enumeration
+        /// <summary>
+        /// Enumerate all items in the tree
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator<KeyValuePair<TBound, TItem>> GetEnumerator()
         {
             var nodes = new List<Node>() { _root };

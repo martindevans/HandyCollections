@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 namespace HandyCollections
 {
@@ -32,8 +33,8 @@ namespace HandyCollections
         {
             get
             {
-                if (index < 0 || index >= Count)
-                    throw new ArgumentOutOfRangeException(nameof(index));
+                Contract.Requires<IndexOutOfRangeException>(index >= 0 && index < Count);
+
                 if (Count < Capacity)
                     return _items[index];
                 return _items[(_end + index) % _items.Length];
@@ -46,8 +47,7 @@ namespace HandyCollections
         /// <param name="size"></param>
         public RingBuffer(int size)
         {
-            if (size <= 0)
-                throw new ArgumentOutOfRangeException(nameof(size), "Capacity must be > 0");
+            Contract.Requires<ArgumentOutOfRangeException>(size > 0);
 
             _items = new T[size];
         }
@@ -65,6 +65,10 @@ namespace HandyCollections
                 Count++;
         }
 
+        /// <summary>
+        /// Enumerate items in the ringbuffer (oldest to newest)
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator<T> GetEnumerator()
         {
             for (var i = 0; i < Count; i++)

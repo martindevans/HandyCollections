@@ -342,12 +342,21 @@ namespace HandyCollections.BinaryTree
                 }
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="key"></param>
+            /// <param name="value"></param>
             protected internal Node(K key, V value)
             {
                 Key = key;
                 Value = value;
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <returns></returns>
             public override string ToString()
             {
                 return "Node " + new KeyValuePair<K, V>(Key, Value).ToString();

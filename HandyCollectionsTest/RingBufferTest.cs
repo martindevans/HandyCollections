@@ -42,7 +42,7 @@ namespace HandyCollectionsTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [ExpectedException(typeof(IndexOutOfRangeException))]
         public void AssertThat_IndexingAfterCount_Throws()
         {
             var r = new RingBuffer<int>(5)

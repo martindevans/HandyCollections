@@ -8,7 +8,7 @@ namespace HandyCollections.BloomFilter
     /// <typeparam name="T"></typeparam>
     public class CountingBloomFilter<T>
     {
-        readonly byte[] _array;
+        internal readonly byte[] Array;
         /// <summary>
         /// The number of keys to use for this filter
         /// </summary>
@@ -18,7 +18,7 @@ namespace HandyCollections.BloomFilter
         /// A hash generation function
         /// </summary>
         public delegate int GenerateHash(T a);
-        private readonly GenerateHash _hashGenerator = BloomFilter<T>.SystemHash;
+        private readonly GenerateHash _hashGenerator;
 
         /// <summary>
         /// Gets the number of items which have been added to this filter
@@ -38,7 +38,7 @@ namespace HandyCollections.BloomFilter
         {
             get
             {
-                return BloomFilter<T>.CalculateFalsePositiveRate(_keyCount, _array.Length, Count);
+                return BloomFilter<T>.CalculateFalsePositiveRate(_keyCount, Array.Length, Count);
             }
         }
 
@@ -72,7 +72,7 @@ namespace HandyCollections.BloomFilter
         /// <param name="hashgen">The hash generation function</param>
         public CountingBloomFilter(int size, int keys, GenerateHash hashgen)
         {
-            _array = new byte[size];
+            Array = new byte[size];
             _keyCount = keys;
             _hashGenerator = hashgen;
         }
@@ -87,7 +87,7 @@ namespace HandyCollections.BloomFilter
         {
             int size = (int)(-(estimatedsize * Math.Log(targetFalsePositiveRate)) / 0.480453014f);
             int keys = (int)(0.7f * size / estimatedsize);
-            _array = new byte[size];
+            Array = new byte[size];
             _keyCount = keys;
 
             _hashGenerator = hashgen;
@@ -105,18 +105,18 @@ namespace HandyCollections.BloomFilter
             for (int i = 0; i < _keyCount; i++)
             {
                 hash++;
-                int index = BloomFilter<T>.GetIndex(hash, _array.Length);
-                if (_array[index] == byte.MaxValue)
+                int index = BloomFilter<T>.GetIndex(hash, Array.Length);
+                if (Array[index] == byte.MaxValue)
                 {
                     //Rollback changes
                     for (int r = i - 1; r >= 0; r--)
                     {
                         hash--;
-                        _array[BloomFilter<T>.GetIndex(hash, _array.Length)]--;
+                        Array[BloomFilter<T>.GetIndex(hash, Array.Length)]--;
                     }
                     throw new OverflowException("Bloom filter overflowed");
                 }
-                if (_array[index]++ == 0)
+                if (Array[index]++ == 0)
                     b = false;
             }
 
@@ -136,18 +136,18 @@ namespace HandyCollections.BloomFilter
             for (int i = 0; i < _keyCount; i++)
             {
                 hash++;
-                int index = BloomFilter<T>.GetIndex(hash, _array.Length);
-                if (_array[index] == 0)
+                int index = BloomFilter<T>.GetIndex(hash, Array.Length);
+                if (Array[index] == 0)
                 {
                     //Rollback changes
                     for (int r = i - 1; r >= 0; r--)
                     {
                         hash--;
-                        _array[BloomFilter<T>.GetIndex(hash, _array.Length)]++;
+                        Array[BloomFilter<T>.GetIndex(hash, Array.Length)]++;
                     }
                     return false;
                 }
-                _array[index]--;
+                Array[index]--;
             }
 
             Count--;
@@ -161,8 +161,8 @@ namespace HandyCollections.BloomFilter
         public void Clear()
         {
             Count = 0;
-            for (int i = 0; i < _array.Length; i++)
-                _array[i] = 0;
+            for (int i = 0; i < Array.Length; i++)
+                Array[i] = 0;
         }
 
         /// <summary>
@@ -178,7 +178,7 @@ namespace HandyCollections.BloomFilter
             for (int i = 0; i < _keyCount; i++)
             {
                 hash++;
-                if (_array[BloomFilter<T>.GetIndex(hash, _array.Length)] == 0)
+                if (Array[BloomFilter<T>.GetIndex(hash, Array.Length)] == 0)
                     return false;
             }
             return true;

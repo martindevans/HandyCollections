@@ -103,6 +103,13 @@ namespace HandyCollections.Extensions
             return items.MaxItem(a => -value(a));
         }
 
+        /// <summary>
+        /// Convert given enumeration of items to a MinHeap
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="items"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static IMinHeap<KeyValuePair<float, T>> ToMinHeap<T>(this IEnumerable<T> items, Func<T, float> key)
         {
             //Create a heap which order on the key of a KVP

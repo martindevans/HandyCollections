@@ -104,6 +104,15 @@ namespace HandyCollections.Extensions
             return storeIndex;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="predicate"></param>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         public static int Partition<T>(this IList<T> list, Func<T, bool> predicate, int left, int right)
         {
             //Close in two indices until they overlap

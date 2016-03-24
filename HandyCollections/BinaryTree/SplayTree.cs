@@ -5,17 +5,28 @@ namespace HandyCollections.BinaryTree
     /// <summary>
     /// A binary tree which reorders itself to make more recently accessed items more efficient to access
     /// </summary>
-    /// <typeparam name="K"></typeparam>
-    /// <typeparam name="V"></typeparam>
-    public class SplayTree<K, V>
-        :BinaryTree<K, V>
+    /// <typeparam name="TK"></typeparam>
+    /// <typeparam name="TV"></typeparam>
+    public class SplayTree<TK, TV>
+        :BinaryTree<TK, TV>
     {
-        public override Node Add(K key, V value)
+        /// <summary>
+        /// Add a new items to this tree
+        /// </summary>
+        /// <param name="key">The key this node (used for finding)</param>
+        /// <param name="value">The value stored in this node</param>
+        /// <returns></returns>
+        public override Node Add(TK key, TV value)
         {
             return Splay(base.Add(key, value));
         }
 
-        public override Node Find(K key)
+        /// <summary>
+        /// Find the node with the given key (or null)
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public override Node Find(TK key)
         {
             var f = base.Find(key);
 
