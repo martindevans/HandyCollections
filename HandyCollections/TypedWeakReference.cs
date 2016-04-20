@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 
 namespace HandyCollections
 {
@@ -67,6 +68,12 @@ namespace HandyCollections
         public TypedWeakReference(T target, bool trackResurrection)
         {
             _reference = new WeakReference(target, trackResurrection);
+        }
+
+        [ContractInvariantMethod]
+        private void ObjectInvariant()
+        {
+            Contract.Invariant(_reference != null);
         }
     }
 }

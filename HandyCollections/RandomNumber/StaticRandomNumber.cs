@@ -30,10 +30,10 @@ namespace HandyCollections.RandomNumber
         /// </summary>
         /// <param name="upperBound">The maximum value (exclusive)</param>
         /// <returns></returns>
-        public unsafe static uint Random(uint upperBound = uint.MaxValue)
+        public static uint Random(uint upperBound = uint.MaxValue)
         {
-            long ticks = DateTime.Now.Ticks;
-            uint time = ((uint) (ticks & uint.MaxValue)) | ((uint) ((ticks >> 32) & uint.MaxValue));
+            var ticks = DateTime.Now.Ticks;
+            var time = ((uint) (ticks & uint.MaxValue)) | ((uint) ((ticks >> 32) & uint.MaxValue));
 
             return Random(time, upperBound);
         }

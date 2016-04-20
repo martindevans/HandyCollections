@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 namespace HandyCollections
 {
@@ -15,12 +16,12 @@ namespace HandyCollections
         /// Gets the count.
         /// </summary>
         /// <value>The count.</value>
-        public int Count
+        public int Count => _list.Count;
+
+        [ContractInvariantMethod]
+        private void ObjectInvariant()
         {
-            get
-            {
-                return _list.Count;
-            }
+            Contract.Invariant(_list != null);
         }
 
         /// <summary>
@@ -50,13 +51,7 @@ namespace HandyCollections
         /// Gets the least recently used.
         /// </summary>
         /// <value>The least recently used.</value>
-        public T LeastRecentlyUsed
-        {
-            get
-            {
-                return _list.First.Value;
-            }
-        }
+        public T LeastRecentlyUsed => _list.First.Value;
 
         /// <summary>
         /// Removes the least recently used.
@@ -73,13 +68,7 @@ namespace HandyCollections
         /// Gets the most recently used.
         /// </summary>
         /// <value>The most recently used.</value>
-        public T MostRecentlyUsed
-        {
-            get
-            {
-                return _list.Last.Value;
-            }
-        }
+        public T MostRecentlyUsed => _list.Last.Value;
 
         /// <summary>
         /// Removes the most recently used.

@@ -52,6 +52,12 @@ namespace HandyCollections
             _items = new T[size];
         }
 
+        [ContractInvariantMethod]
+        private void ObjectInvariant()
+        {
+            Contract.Invariant(_items != null);
+        }
+
         /// <summary>
         /// 
         /// </summary>

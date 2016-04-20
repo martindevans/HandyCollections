@@ -181,6 +181,7 @@
     <Compile Include="BloomFilter\IBloomFilter.cs" />
     <Compile Include="BloomFilter\ScalableBloomFilter.cs" />
     <Compile Include="Extensions\IListExtensions.cs" />
+    <Compile Include="Extensions\IReadOnlyListExtensions.cs" />
     <Compile Include="Geometry\GeometricTree.cs" />
     <Compile Include="Geometry\Octree.cs" />
     <Compile Include="Geometry\Quadtree.cs" />

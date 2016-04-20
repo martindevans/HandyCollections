@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace HandyCollections.RandomNumber
 {
@@ -7,16 +6,16 @@ namespace HandyCollections.RandomNumber
     /// Creates a set of 16 bit numbers which repeats after 2^16 numbers (ie. longest possible period of non repeating numbers)
     /// </summary>
     public class LinearFeedbackShiftRegister16
-        :IEnumerable<UInt16>
+        :IEnumerable<ushort>
     {
         #region fields
         /// <summary>
         /// The number of numbers this sequence will go through before repeating
         /// </summary>
-        public const int PERIOD = UInt16.MaxValue;
+        public const int PERIOD = ushort.MaxValue;
 
-        private UInt16 _lfsr;
-        private UInt16 _bit;
+        private ushort _lfsr;
+        private ushort _bit;
         #endregion
 
         #region constructors
@@ -24,7 +23,7 @@ namespace HandyCollections.RandomNumber
         /// Initializes a new instance of the <see cref="LinearFeedbackShiftRegister16"/> class.
         /// </summary>
         /// <param name="seed">The seed to initialise the sequence with</param>
-        public LinearFeedbackShiftRegister16(UInt16 seed)
+        public LinearFeedbackShiftRegister16(ushort seed)
         {
             if (seed == 0)
                 seed++;
@@ -45,10 +44,10 @@ namespace HandyCollections.RandomNumber
         /// Gets the next random number in the sequence
         /// </summary>
         /// <returns></returns>
-        public UInt16 NextRandom()
+        public ushort NextRandom()
         {
-            _bit = (UInt16)(((_lfsr >> 0) ^ (_lfsr >> 2) ^ (_lfsr >> 3) ^ (_lfsr >> 5)) & 1);
-            _lfsr = (UInt16)((_lfsr >> 1) | (_bit << 15));
+            _bit = (ushort)(((_lfsr >> 0) ^ (_lfsr >> 2) ^ (_lfsr >> 3) ^ (_lfsr >> 5)) & 1);
+            _lfsr = (ushort)((_lfsr >> 1) | (_bit << 15));
 
             return _lfsr;
         }
@@ -60,7 +59,7 @@ namespace HandyCollections.RandomNumber
         /// <returns></returns>
         public IEnumerator<ushort> GetEnumerator()
         {
-            for (int i = 0; i < PERIOD; i++)
+            for (var i = 0; i < PERIOD; i++)
                 yield return NextRandom();
         }
 
@@ -72,7 +71,7 @@ namespace HandyCollections.RandomNumber
         /// </returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return (this as IEnumerable<UInt16>).GetEnumerator();
+            return (this as IEnumerable<ushort>).GetEnumerator();
         }
         #endregion
     }
