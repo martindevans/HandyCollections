@@ -11,7 +11,7 @@ namespace HandyCollectionsTest
     [TestClass]
     public class OctreeTest
     {
-        private readonly Octree<string> _octree = new Octree<string>(new BoundingBox(new Vector3(0), new Vector3(1000)), 1);
+        private readonly Octree<string> _octree = new Octree<string>(new BoundingBox(new Vector3(0), new Vector3(1000)), 1, 32);
             
         [TestInitialize]
         public void Initialize()

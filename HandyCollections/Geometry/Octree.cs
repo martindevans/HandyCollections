@@ -15,8 +15,9 @@ namespace HandyCollections.Geometry
         /// </summary>
         /// <param name="bounds"></param>
         /// <param name="threshold"></param>
-        public Octree(BoundingBox bounds, int threshold)
-            : base(bounds, threshold)
+        /// <param name="maxDepth"></param>
+        public Octree(BoundingBox bounds, int threshold, int maxDepth)
+            : base(bounds, threshold, maxDepth)
         {
         }
 

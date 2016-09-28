@@ -33,10 +33,11 @@ namespace HandyCollections.Geometry
         /// </summary>
         /// <param name="bounds"></param>
         /// <param name="threshold"></param>
-        protected GeometricTree(TBound bounds, int threshold)
+        /// <param name="maxDepth"></param>
+        protected GeometricTree(TBound bounds, int threshold, int maxDepth)
         {
             _threshold = threshold;
-            _root = new Node(this, bounds);
+            _root = new Node(this, bounds, 0, maxDepth);
         }
 
         /// <summary>
@@ -149,11 +150,17 @@ namespace HandyCollections.Geometry
             public readonly TBound Bounds;
             public Node[] Children;
 
+            private readonly int _depth;
+            private readonly int _maxDepth;
+
             private readonly GeometricTree<TItem, TVector, TBound> _tree;
 
-            public Node(GeometricTree<TItem, TVector, TBound> tree, TBound bounds)
+            public Node(GeometricTree<TItem, TVector, TBound> tree, TBound bounds, int depth, int maxDepth)
             {
                 _tree = tree;
+                _depth = depth;
+                _maxDepth = maxDepth;
+
                 Bounds = bounds;
             }
 
@@ -163,7 +170,7 @@ namespace HandyCollections.Geometry
 
                 Children = new Node[bounds.Length];
                 for (var i = 0; i < bounds.Length; i++)
-                    Children[i] = new Node(_tree, bounds[i]);
+                    Children[i] = new Node(_tree, bounds[i], _depth + 1, _maxDepth);
 
                 for (var i = Items.Count - 1; i >= 0; i--)
                 {
@@ -189,7 +196,7 @@ namespace HandyCollections.Geometry
                 {
                     Items.Add(m);
 
-                    if (Items.Count > splitThreshold)
+                    if (Items.Count > splitThreshold && _depth < _maxDepth)
                         Split(splitThreshold);
                 }
                 else

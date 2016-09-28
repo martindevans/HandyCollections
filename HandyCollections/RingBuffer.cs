@@ -71,6 +71,75 @@ namespace HandyCollections
                 Count++;
         }
 
+        public void Add(T[] items)
+        {
+            Add(new ArraySegment<T>(items));
+        }
+
+        public void Add(ArraySegment<T> items)
+        {
+            if (items.Count > Capacity)
+            {
+                //this single operation will overwrite the entire buffer
+                //Reset buffer to empty and copy in last <capacity> items
+
+                _end = Capacity;
+                Count = Capacity;
+                Array.Copy(items.Array, items.Offset + items.Count - Capacity, _items, 0, Capacity);
+            }
+            else
+            {
+                if (_end + items.Count > Capacity)
+                {
+                    // going to run off the end of the buffer;
+                    // copy as much as we can then put the rest at the start of the buffer
+                    var remainingSpace = Capacity - _end;
+                    Array.Copy(items.Array, items.Offset, _items, _end, remainingSpace);
+                    Array.Copy(items.Array, items.Offset + remainingSpace, _items, 0, items.Count - remainingSpace);
+                    _end = (_end + items.Count) % _items.Length;
+                }
+                else
+                {
+                    // copy the data into the buffer
+                    Array.Copy(items.Array, items.Offset, _items, _end, items.Count);
+                    _end += items.Count;
+                }
+
+                Count = Math.Min(Count + items.Count, Capacity);
+            }
+        }
+
+        /// <summary>
+        /// Copy as much data as possible into the given array segment
+        /// </summary>
+        /// <param name="output"></param>
+        /// <returns>A subsection of the given segment, which contains the data</returns>
+        public ArraySegment<T> CopyTo(ArraySegment<T> output)
+        {
+            var count = Math.Min(Count, output.Count);
+            var start = (_end + Capacity - Count) % Capacity;
+            if (start + count < Capacity)
+            {
+                //We can copy all the data we need in a single operation (no wrapping)
+                Array.Copy(_items, start, output.Array, output.Offset, count);
+            }
+            else
+            {
+                //Copying this much data wraps around, so we need 2 copies
+                var cp = Capacity - start;
+                Array.Copy(_items, start, output.Array, output.Offset, cp);
+                Array.Copy(_items, 0, output.Array, output.Offset + cp, count - cp);
+            }
+
+            return new ArraySegment<T>(output.Array, output.Offset, count);
+        }
+
+        public void Clear()
+        {
+            Count = 0;
+            _end = 0;
+        }
+
         /// <summary>
         /// Enumerate items in the ringbuffer (oldest to newest)
         /// </summary>

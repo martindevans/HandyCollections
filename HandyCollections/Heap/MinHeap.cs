@@ -128,7 +128,7 @@ namespace HandyCollections.Heap
         }
 #endregion
 
-#region remove
+        #region remove
         /// <summary>
         /// 
         /// </summary>
@@ -173,9 +173,9 @@ namespace HandyCollections.Heap
         {
             _heap.Clear();
         }
-#endregion
+        #endregion
 
-#region private helpers
+        #region private helpers
         private void BubbleUp(int index)
         {
             while (index > 0)
@@ -270,9 +270,9 @@ namespace HandyCollections.Heap
 
             return -1;
         }
-#endregion
+        #endregion
 
-#region searching
+        #region searching
         /// <summary>
         /// 
         /// </summary>
@@ -292,6 +292,6 @@ namespace HandyCollections.Heap
         {
             return _heap.FindIndex(predicate);
         }
-#endregion
+        #endregion
     }
 }

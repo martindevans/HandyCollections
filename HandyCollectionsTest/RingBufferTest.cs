@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HandyCollections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -24,6 +21,7 @@ namespace HandyCollectionsTest
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void AssertThat_ConstructingWithNegativeCapacity_Throws()
         {
+            // ReSharper disable once UnusedVariable
             var r = new RingBuffer<int>(-5);
         }
 
@@ -42,6 +40,54 @@ namespace HandyCollectionsTest
         }
 
         [TestMethod]
+        public void AssertThat_AddingArrayToRingBuffer_AddsItems()
+        {
+            var r = new RingBuffer<int>(5) { new int[] {1, 2} };
+
+
+            Assert.AreEqual(1, r[0]);
+            Assert.AreEqual(2, r[1]);
+        }
+
+        [TestMethod]
+        public void AssertThat_AddingArrayToRingBuffer_Overwrites()
+        {
+            var r = new RingBuffer<int>(5) {
+
+                //Add so much data we completely overwrite the entire array
+                new int[] {
+                    1, 2, 3, 4, 5,
+                    6, 7, 8, 9, 10,
+                    11
+                }
+            };
+
+            Assert.AreEqual(7, r[0]);
+            Assert.AreEqual(8, r[1]);
+        }
+
+        [TestMethod]
+        public void AssertThat_AddingArrayToRingBuffer_Wraps()
+        {
+            var r = new RingBuffer<int>(5) {
+
+                //Add some initial data
+                1,
+                2,
+                3,
+
+                //Add some data which will fall off the end
+                new int[] {4, 5, 6, 7}
+            };
+
+            Assert.AreEqual(3, r[0]);
+            Assert.AreEqual(4, r[1]);
+            Assert.AreEqual(5, r[2]);
+            Assert.AreEqual(6, r[3]);
+            Assert.AreEqual(7, r[4]);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(IndexOutOfRangeException))]
         public void AssertThat_IndexingAfterCount_Throws()
         {
@@ -52,7 +98,39 @@ namespace HandyCollectionsTest
             };
 
 
+            // ReSharper disable once UnusedVariable
             var v = r[3];
+        }
+
+        [TestMethod]
+        public void AssertThat_CopyTo_CopiesCompleteBuffer_WhenBufferIsNotFull()
+        {
+            var r = new RingBuffer<int>(5) { 1, 2, 3 };
+
+            var output = r.CopyTo(new ArraySegment<int>(new int[10]));
+
+            Assert.AreEqual(3, output.Count);
+
+            Assert.AreEqual(1, output.Array[0]);
+            Assert.AreEqual(2, output.Array[1]);
+            Assert.AreEqual(3, output.Array[2]);
+        }
+
+        [TestMethod]
+        public void AssertThat_CopyTo_CopiesCompleteBuffer_WhenBufferIsTorn()
+        {
+            //Write enough data to wrap around so the buffer is "torn"
+            var r = new RingBuffer<int>(5) { 1, 2, 3, 4, 5, 6 };
+
+            var output = r.CopyTo(new ArraySegment<int>(new int[10]));
+
+            Assert.AreEqual(5, output.Count);
+
+            Assert.AreEqual(2, output.Array[0]);
+            Assert.AreEqual(3, output.Array[1]);
+            Assert.AreEqual(4, output.Array[2]);
+            Assert.AreEqual(5, output.Array[3]);
+            Assert.AreEqual(6, output.Array[4]);
         }
 
         [TestMethod]
