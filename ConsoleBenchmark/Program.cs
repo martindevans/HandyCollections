@@ -26,7 +26,7 @@ namespace ConsoleBenchmark
         [Benchmark]
         public void Ptr()
         {
-            for (int i = -1000; i < 1000; i++)
+            for (var i = -1000; i < 1000; i++)
             {
                 uint x;
                 unsafe

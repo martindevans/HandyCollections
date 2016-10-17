@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-
-#if DEBUG
-using System.Linq;
-#endif
+using System.Diagnostics.Contracts;
+using System.Runtime.CompilerServices;
 
 namespace HandyCollections.Heap
 {
@@ -40,8 +38,18 @@ namespace HandyCollections.Heap
         /// 
         /// </summary>
         public MinHeap()
-            : this(100, Comparer<T>.Default)
+            : this(64)
         {
+            
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public MinHeap(int capacity)
+            : this(capacity, Comparer<T>.Default)
+        {
+            Contract.Requires(capacity >= 0);
         }
 
         /// <summary>
@@ -51,6 +59,8 @@ namespace HandyCollections.Heap
         /// <param name="comparer"></param>
         public MinHeap(int capacity, IComparer<T> comparer)
         {
+            Contract.Requires(capacity >= 0);
+
             _heap = new List<T>(capacity);
             _comparer = comparer;
         }
@@ -63,6 +73,7 @@ namespace HandyCollections.Heap
         public MinHeap(int capacity, Comparison<T> comparison)
             : this(capacity, Comparer<T>.Create(comparison))
         {
+            Contract.Requires(capacity >= 0);
         }
 
         /// <summary>
@@ -118,15 +129,29 @@ namespace HandyCollections.Heap
         {
             // Using sorting is tempting, for it's sheer simplicity:
             //    _heap.Sort(_comparer);
-            // There's also the possibility the framework implemented sorting algorithm is way better/faster than my heapify function in practical cases (despite being algorithmically worse)
+            // There's also the possibility the framework implemented sorting algorithm is way better/faster than my heapify function in practical cases.
             // Benchmarking reveals sorting to *always* be slower, on both tiny heaps (10 items) and massive heaps (1000000 items)
 
             for (var i = _heap.Count - 1; i >= 0; i--)
-                BubbleUp(TrickleDown(i));
+                TrickleDown(i);
 
             DebugCheckHeapProperty();
         }
-#endregion
+
+        /// <summary>
+        /// Establish the heap property (use this if you mutate an item already in the heap)
+        /// </summary>
+        /// <param name="mutated">The index of the item which was mutated</param>
+        public void Heapify(int mutated)
+        {
+            if (mutated < 0 || mutated >= Count)
+                throw new IndexOutOfRangeException(nameof(mutated));
+
+            //We either need to move this item up or down the heap. Try trickling down, and if that does nothing bubble up instead
+            if (TrickleDown(mutated) == mutated)
+                BubbleUp(mutated);
+        }
+        #endregion
 
         #region remove
         /// <summary>
@@ -148,18 +173,17 @@ namespace HandyCollections.Heap
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public T RemoveAt(int index)
         {
-            if (_heap.Count == 0)
-                throw new InvalidOperationException("Heap is empty");
             if (index < 0 || index > _heap.Count)
                 throw new ArgumentOutOfRangeException(nameof(index));
 
             var removed = _heap[index];
 
+            //Move the last item into the first position
             _heap[index] = _heap[_heap.Count - 1];
             _heap.RemoveAt(_heap.Count - 1);
 
             if (_heap.Count > 0 && index < _heap.Count)
-                BubbleUp(TrickleDown(index));
+                Heapify(0);
 
             DebugCheckHeapProperty();
 
@@ -220,22 +244,24 @@ namespace HandyCollections.Heap
         // ReSharper disable once MemberCanBeMadeStatic.Local
         private void DebugCheckHeapProperty()
         {
-#if DEBUG
-            if (_heap.Any(t => IsLessThan(t, Minimum)))
-                throw new Exception("Heap property violated");
-#endif
+            //// ReSharper disable once InvokeAsExtensionMethod
+            //if (Enumerable.Any(_heap, t => IsLessThan(t, Minimum)))
+            //    throw new Exception("Heap property violated");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool IsLessThan(T a, T b)
         {
             return _comparer.Compare(a, b) < 0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int ParentIndex(int i)
         {
             return (i - 1) / 2;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Swap(int a, int b)
         {
             var temp = _heap[a];
@@ -243,20 +269,22 @@ namespace HandyCollections.Heap
             _heap[b] = temp;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int LeftChild(int i)
         {
             return 2 * i + 1;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int RightChild(int i)
         {
             return 2 * i + 2;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int SmallestChildSmallerThan(int i, T item)
         {
             var leftChildIndex = LeftChild(i);
-
             var rightChildIndex = RightChild(i);
 
             var smallest = -1;
