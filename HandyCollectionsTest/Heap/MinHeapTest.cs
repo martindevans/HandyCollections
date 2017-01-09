@@ -4,7 +4,7 @@ using System.Linq;
 using HandyCollections.Heap;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HandyCollectionsTest
+namespace HandyCollectionsTest.Heap
 {
     [TestClass]
     public class MinHeapTest
@@ -235,8 +235,7 @@ namespace HandyCollectionsTest
         [TestMethod]
         public void AssertThat_RemoveAt_UpdatesMinimum()
         {
-            var heap = new MinHeap<int>();
-            heap.Add(new[] {10, 14, 7, 11, 0});
+            var heap = new MinHeap<int> { 10, 14, 7, 11, 0 };
 
             Assert.AreEqual(0, heap.Minimum);
             heap.RemoveAt(0);
@@ -246,14 +245,28 @@ namespace HandyCollectionsTest
         [TestMethod]
         public void AssertThat_RemoveAt_MaintainsHeapOrder()
         {
-            var heap = new MinHeap<int>();
-            heap.Add(new[] { 10, 14, 7, 11, 0 });
+            var heap = new MinHeap<int> { 10, 14, 7, 11, 0 };
 
             Assert.AreEqual(0, heap.Minimum);
             heap.RemoveAt(3);
             Assert.AreEqual(0, heap.Minimum);
 
             AssertHeapIsInOrder(heap);
+        }
+
+        [TestMethod]
+        public void AssertThat_EnumeratingHeap_GetsAllItemsInHeap()
+        {
+            var heap = new MinHeap<int> { 10, 14, 7, 11, 0 };
+
+            var items = heap.ToArray();
+
+            Assert.AreEqual(heap.Count, items.Length);
+            Assert.IsTrue(items.Contains(10));
+            Assert.IsTrue(items.Contains(14));
+            Assert.IsTrue(items.Contains(7));
+            Assert.IsTrue(items.Contains(11));
+            Assert.IsTrue(items.Contains(0));
         }
 
         private class Item

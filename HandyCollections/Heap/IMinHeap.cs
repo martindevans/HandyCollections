@@ -8,6 +8,7 @@ namespace HandyCollections.Heap
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public interface IMinHeap<T>
+        : IEnumerable<T>
     {
         /// <summary>
         /// Number of items in the heap

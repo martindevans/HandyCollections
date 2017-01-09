@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
@@ -30,6 +31,13 @@ namespace HandyCollections.Heap
         public T Minimum
         {
             get { return _heap[0]; }
+        }
+
+        private bool _allowResize = true;
+        public bool AllowHeapResize
+        {
+            get { return _allowResize; }
+            set { _allowResize = value; }
         }
         #endregion
 
@@ -104,6 +112,9 @@ namespace HandyCollections.Heap
         /// <exception cref="NotImplementedException"></exception>
         public void Add(T item)
         {
+            if (!_allowResize && _heap.Count == _heap.Capacity)
+                throw new InvalidOperationException("Heap is full and resizing is disabled");
+
             _heap.Add(item);
             BubbleUp(_heap.Count - 1);
 
@@ -321,5 +332,19 @@ namespace HandyCollections.Heap
             return _heap.FindIndex(predicate);
         }
         #endregion
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable<T>)this).GetEnumerator();
+        }
+
+        /// <summary>
+        /// Enumerate this heap *in no particular order*
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
+            return _heap.GetEnumerator();
+        }
     }
 }
