@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Numerics;
 using HandyCollections.Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 using SwizzleMyVectors.Geometry;
 
-namespace HandyCollectionsTest
+namespace HandyCollectionsTest.Geometry
 {
     [TestClass]
     public class OctreeTest
