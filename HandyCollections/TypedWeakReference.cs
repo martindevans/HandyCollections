@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
+using JetBrains.Annotations;
 
 namespace HandyCollections
 {
@@ -9,47 +9,29 @@ namespace HandyCollections
     /// <typeparam name="T"></typeparam>
     public class TypedWeakReference<T> where T : class
     {
-        private readonly WeakReference _reference;
+        [NotNull] private readonly WeakReference _reference;
 
         /// <summary>
         /// Gets a value indicating whether this instance is alive.
         /// </summary>
         /// <value><c>true</c> if this instance is alive; otherwise, <c>false</c>.</value>
-        public bool IsAlive
-        {
-            get
-            {
-                return _reference.IsAlive;
-            }
-        }
+        public bool IsAlive => _reference.IsAlive;
 
         /// <summary>
         /// Gets or sets the target.
         /// </summary>
         /// <value>The target.</value>
-        public T Target
+        [CanBeNull] public T Target
         {
-            get
-            {
-                return _reference.Target as T;
-            }
-            set
-            {
-                _reference.Target = value;
-            }
+            get => _reference.Target as T;
+            set => _reference.Target = value;
         }
 
         /// <summary>
         /// Gets a value indicating whether the object referenced by this weak reference is tracked after finalisation.
         /// </summary>
         /// <value><c>true</c> if the object referenced by this weak reference is tracked after finalisation; otherwise, <c>false</c>.</value>
-        public bool TrackResurrection
-        {
-            get
-            {
-                return _reference.TrackResurrection;
-            }
-        }
+        public bool TrackResurrection => _reference.TrackResurrection;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TypedWeakReference&lt;T&gt;"/> class.
@@ -68,12 +50,6 @@ namespace HandyCollections
         public TypedWeakReference(T target, bool trackResurrection)
         {
             _reference = new WeakReference(target, trackResurrection);
-        }
-
-        [ContractInvariantMethod]
-        private void ObjectInvariant()
-        {
-            Contract.Invariant(_reference != null);
         }
     }
 }

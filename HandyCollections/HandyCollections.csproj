@@ -153,6 +153,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="JetBrains.Annotations, Version=11.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.11.1.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="SwizzleMyVectors, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SwizzleMyVectors.1.1.1.0\lib\net46\SwizzleMyVectors.dll</HintPath>
       <Private>True</Private>

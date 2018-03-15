@@ -109,6 +109,8 @@ namespace HandyCollectionsTest
 
             var output = r.CopyTo(new ArraySegment<int>(new int[10]));
 
+            Assert.IsNotNull(output.Array);
+
             Assert.AreEqual(3, output.Count);
 
             Assert.AreEqual(1, output.Array[0]);
@@ -123,6 +125,8 @@ namespace HandyCollectionsTest
             var r = new RingBuffer<int>(5) { 1, 2, 3, 4, 5, 6 };
 
             var output = r.CopyTo(new ArraySegment<int>(new int[10]));
+
+            Assert.IsNotNull(output.Array);
 
             Assert.AreEqual(5, output.Count);
 
@@ -155,6 +159,16 @@ namespace HandyCollectionsTest
                     Assert.AreEqual(l[l.Count - r.Count + j], r[j]);
                 }
             }
+        }
+
+        [TestMethod]
+        public void AssertThat_Clear_ClearsAllData()
+        {
+            var b = new RingBuffer<int>(4) { 1, 2, 3, 4, 5 };
+
+            Assert.AreEqual(4, b.Count);
+            b.Clear();
+            Assert.AreEqual(0, b.Count);
         }
     }
 }

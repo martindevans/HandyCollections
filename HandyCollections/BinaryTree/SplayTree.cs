@@ -1,4 +1,4 @@
-﻿using System;
+﻿using JetBrains.Annotations;
 
 namespace HandyCollections.BinaryTree
 {
@@ -38,39 +38,35 @@ namespace HandyCollections.BinaryTree
         private Node Splay(Node n)
         {
             while (n != Root)
-                SplayStep(n);
+            {
+                if (n.Parent.IsRoot)
+                {
+                    Zig(n);
+                }
+                else
+                {
+                    if (n.IsLeftChild == n.Parent.IsLeftChild)
+                        ZigZig(n);
+                    else
+                        ZigZag(n);
+                }
+            }
 
             return n;
         }
 
-        private void SplayStep(Node n)
-        {
-            if (n.IsRoot)
-                throw new InvalidOperationException("Cannot perform splay step on root");
-
-            if (n.Parent.IsRoot)
-                Zig(n);
-            else
-            {
-                if (n.IsLeftChild == n.Parent.IsLeftChild)
-                    ZigZig(n);
-                else
-                    ZigZag(n);
-            }
-        }
-
-        private void Zig(Node x)
+        private void Zig([NotNull] Node x)
         {
             Rotate(x.Parent, x.IsLeftChild);
         }
 
-        private void ZigZig(Node n)
+        private void ZigZig([NotNull] Node n)
         {
             Zig(n.Parent);
             Zig(n);
         }
 
-        private void ZigZag(Node n)
+        private void ZigZag([NotNull] Node n)
         {
             Zig(n);
             Zig(n);

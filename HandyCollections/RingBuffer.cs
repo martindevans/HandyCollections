@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+using JetBrains.Annotations;
 
 namespace HandyCollections
 {
@@ -11,7 +11,7 @@ namespace HandyCollections
     public class RingBuffer<T>
         : IEnumerable<T>
     {
-        private readonly T[] _items;
+        [NotNull] private readonly T[] _items;
 
         /// <summary>
         /// Indicates the number of items added to the collection and currently stored
@@ -33,11 +33,13 @@ namespace HandyCollections
         {
             get
             {
-                Contract.Requires<IndexOutOfRangeException>(index >= 0 && index < Count);
+
+                if (index < 0 || index >= Count) throw new IndexOutOfRangeException();
 
                 if (Count < Capacity)
                     return _items[index];
-                return _items[(_end + index) % _items.Length];
+                else
+                    return _items[(_end + index) % _items.Length];
             }
         }
 
@@ -47,16 +49,11 @@ namespace HandyCollections
         /// <param name="size"></param>
         public RingBuffer(int size)
         {
-            Contract.Requires<ArgumentOutOfRangeException>(size > 0);
+            if (size < 0) throw new ArgumentOutOfRangeException(nameof(size));
 
             _items = new T[size];
         }
 
-        [ContractInvariantMethod]
-        private void ObjectInvariant()
-        {
-            Contract.Invariant(_items != null);
-        }
 
         /// <summary>
         /// 
@@ -71,8 +68,10 @@ namespace HandyCollections
                 Count++;
         }
 
-        public void Add(T[] items)
+        public void Add([NotNull] T[] items)
         {
+            if (items == null) throw new ArgumentNullException(nameof(items));
+
             Add(new ArraySegment<T>(items));
         }
 

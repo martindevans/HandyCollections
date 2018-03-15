@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+using JetBrains.Annotations;
 
 namespace HandyCollections
 {
@@ -10,19 +10,13 @@ namespace HandyCollections
     public class RecentlyUsedQueue<T>
         :IEnumerable<T>
     {
-        private readonly LinkedList<T> _list = new LinkedList<T>();
+        [NotNull] private readonly LinkedList<T> _list = new LinkedList<T>();
 
         /// <summary>
         /// Gets the count.
         /// </summary>
         /// <value>The count.</value>
         public int Count => _list.Count;
-
-        [ContractInvariantMethod]
-        private void ObjectInvariant()
-        {
-            Contract.Invariant(_list != null);
-        }
 
         /// <summary>
         /// 'Uses' the specified item, ie. moves/adds it to the Most recently used position

@@ -1,5 +1,6 @@
 ﻿
 using System.Numerics;
+using JetBrains.Annotations;
 using SwizzleMyVectors.Geometry;
 
 namespace HandyCollections.Geometry
@@ -49,7 +50,7 @@ namespace HandyCollections.Geometry
         /// </summary>
         /// <param name="bound"></param>
         /// <returns></returns>
-        protected override BoundingRectangle[] Split(BoundingRectangle bound)
+        [NotNull] protected override BoundingRectangle[] Split(BoundingRectangle bound)
         {
             var bounds = new BoundingRectangle[4];
             var min = bound.Min;

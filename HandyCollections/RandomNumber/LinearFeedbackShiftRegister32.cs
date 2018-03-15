@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace HandyCollections.RandomNumber
 {
@@ -12,7 +11,7 @@ namespace HandyCollections.RandomNumber
         /// <summary>
         /// The number of numbers this sequence will go through before repeating
         /// </summary>
-        public const uint PERIOD = uint.MaxValue;
+        public const uint Period = uint.MaxValue;
 
         readonly ushort _repeatThreshold;
         readonly LinearFeedbackShiftRegister16 _mostSignificantBits;
@@ -58,7 +57,7 @@ namespace HandyCollections.RandomNumber
         /// <returns></returns>
         public IEnumerator<uint> GetEnumerator()
         {
-            for (uint i = 0; i < PERIOD; i++)
+            for (uint i = 0; i < Period; i++)
                 yield return NextRandom();
         }
 

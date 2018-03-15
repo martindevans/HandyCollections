@@ -12,7 +12,7 @@ namespace HandyCollections.RandomNumber
         /// <summary>
         /// The number of numbers this sequence will go through before repeating
         /// </summary>
-        public const int PERIOD = ushort.MaxValue;
+        public const int Period = ushort.MaxValue;
 
         private ushort _lfsr;
         private ushort _bit;
@@ -59,7 +59,7 @@ namespace HandyCollections.RandomNumber
         /// <returns></returns>
         public IEnumerator<ushort> GetEnumerator()
         {
-            for (var i = 0; i < PERIOD; i++)
+            for (var i = 0; i < Period; i++)
                 yield return NextRandom();
         }
 

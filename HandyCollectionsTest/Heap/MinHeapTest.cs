@@ -28,6 +28,27 @@ namespace HandyCollectionsTest.Heap
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AssertThat_Construct_Throws_WithNegativeCapacity()
+        {
+            new MinHeap<int>(-1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AssertThat_Construct_Throws_WithNegativeCapacity_WithComparer()
+        {
+            new MinHeap<int>(-1, Comparer<int>.Default);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AssertThat_Construct_Throws_WithNegativeCapacity_WithComparison()
+        {
+            new MinHeap<int>(-1, Comparer<int>.Default.Compare);
+        }
+
+        [TestMethod]
         public void AssertThat_Clear_EmptiesHeap()
         {
             var heap = new MinHeap<int>();

@@ -25,7 +25,7 @@ namespace HandyCollectionsTest
                 ++period;
             } while (value != first);
 
-            Assert.AreEqual(LinearFeedbackShiftRegister16.PERIOD, period);
+            Assert.AreEqual(LinearFeedbackShiftRegister16.Period, period);
         }
 
         [TestMethod]

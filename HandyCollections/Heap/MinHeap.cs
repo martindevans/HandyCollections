@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 
 namespace HandyCollections.Heap
 {
@@ -20,25 +20,14 @@ namespace HandyCollections.Heap
         /// <summary>
         /// Get the number of items in this heap
         /// </summary>
-        public int Count
-        {
-            get { return _heap.Count; }
-        }
+        public int Count => _heap.Count;
 
         /// <summary>
         /// Get the minimum value in this heap
         /// </summary>
-        public T Minimum
-        {
-            get { return _heap[0]; }
-        }
+        public T Minimum => _heap[0];
 
-        private bool _allowResize = true;
-        public bool AllowHeapResize
-        {
-            get { return _allowResize; }
-            set { _allowResize = value; }
-        }
+        public bool AllowHeapResize { get; set; } = true;
         #endregion
 
         #region constructors
@@ -57,7 +46,6 @@ namespace HandyCollections.Heap
         public MinHeap(int capacity)
             : this(capacity, Comparer<T>.Default)
         {
-            Contract.Requires(capacity >= 0);
         }
 
         /// <summary>
@@ -67,7 +55,8 @@ namespace HandyCollections.Heap
         /// <param name="comparer"></param>
         public MinHeap(int capacity, IComparer<T> comparer)
         {
-            Contract.Requires(capacity >= 0);
+            if (capacity <= 0)
+                throw new ArgumentOutOfRangeException(nameof(capacity));
 
             _heap = new List<T>(capacity);
             _comparer = comparer;
@@ -81,7 +70,6 @@ namespace HandyCollections.Heap
         public MinHeap(int capacity, Comparison<T> comparison)
             : this(capacity, Comparer<T>.Create(comparison))
         {
-            Contract.Requires(capacity >= 0);
         }
 
         /// <summary>
@@ -112,7 +100,7 @@ namespace HandyCollections.Heap
         /// <exception cref="NotImplementedException"></exception>
         public void Add(T item)
         {
-            if (!_allowResize && _heap.Count == _heap.Capacity)
+            if (!AllowHeapResize && _heap.Count == _heap.Capacity)
                 throw new InvalidOperationException("Heap is full and resizing is disabled");
 
             _heap.Add(item);
@@ -125,8 +113,11 @@ namespace HandyCollections.Heap
         /// Add a large number of items to the heap. This is more efficient that simply calling add on each item individually
         /// </summary>
         /// <param name="items"></param>
-        public void Add(IEnumerable<T> items)
+        public void Add([NotNull] IEnumerable<T> items)
         {
+            if (items == null)
+                throw new ArgumentNullException(nameof(items));
+
             _heap.AddRange(items);
             Heapify();
 
@@ -327,7 +318,7 @@ namespace HandyCollections.Heap
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public int IndexOf(Predicate<T> predicate)
+        public int IndexOf([NotNull] Predicate<T> predicate)
         {
             return _heap.FindIndex(predicate);
         }

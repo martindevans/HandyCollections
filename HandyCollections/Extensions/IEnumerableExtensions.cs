@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using HandyCollections.Heap;
+using JetBrains.Annotations;
 
 namespace HandyCollections.Extensions
 {
@@ -21,9 +20,11 @@ namespace HandyCollections.Extensions
         /// <param name="start">The start.</param>
         /// <param name="end">The end.</param>
         /// <returns></returns>
-        [Pure, Obsolete]
-        public static IEnumerable<T> Append<T>(this IEnumerable<T> start, IEnumerable<T> end)
+        [Pure, Obsolete] public static IEnumerable<T> Append<T>([NotNull] this IEnumerable<T> start, [NotNull] IEnumerable<T> end)
         {
+            if (start == null) throw new ArgumentNullException(nameof(start));
+            if (end == null) throw new ArgumentNullException(nameof(end));
+
             foreach (var item in start)
                 yield return item;
 
@@ -38,9 +39,11 @@ namespace HandyCollections.Extensions
         /// <param name="start">The start.</param>
         /// <param name="end">The end.</param>
         /// <returns></returns>
-        [Pure]
-        public static IEnumerable<T> Append<T>(this IEnumerable<T> start, params T[] end)
+        [Pure, NotNull] public static IEnumerable<T> Append<T>([NotNull] this IEnumerable<T> start, [NotNull] params T[] end)
         {
+            if (start == null) throw new ArgumentNullException(nameof(start));
+            if (end == null) throw new ArgumentNullException(nameof(end));
+
             return start.Concat(end);
         }
 
@@ -52,9 +55,10 @@ namespace HandyCollections.Extensions
         /// <returns>
         /// 	<c>true</c> if the specified enumerable is empty; otherwise, <c>false</c>.
         /// </returns>
-        [Pure]
-        public static bool IsEmpty<T>(this IEnumerable<T> enumerable)
+        [Pure] public static bool IsEmpty<T>([NotNull] this IEnumerable<T> enumerable)
         {
+            if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
+
             return !enumerable.Any();
         }
 
@@ -65,11 +69,10 @@ namespace HandyCollections.Extensions
         /// <param name="items"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        [Pure]
-        public static T MaxItem<T>(this IEnumerable<T> items, Func<T, float> value)
+        [Pure, CanBeNull] public static T MaxItem<T>([NotNull] this IEnumerable<T> items, [NotNull] Func<T, float> value)
         {
-            Contract.Requires(items != null);
-            Contract.Requires(value != null);
+            if (items == null) throw new ArgumentNullException(nameof(items));
+            if (value == null) throw new ArgumentNullException(nameof(value));
 
             var bestScore = float.NegativeInfinity;
             var best = default(T);
@@ -94,11 +97,10 @@ namespace HandyCollections.Extensions
         /// <param name="items"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        [Pure]
-        public static T MinItem<T>(this IEnumerable<T> items, Func<T, float> value)
+        [Pure, CanBeNull] public static T MinItem<T>([NotNull] this IEnumerable<T> items, [NotNull] Func<T, float> value)
         {
-            Contract.Requires(items != null);
-            Contract.Requires(value != null);
+            if (items == null) throw new ArgumentNullException(nameof(items));
+            if (value == null) throw new ArgumentNullException(nameof(value));
 
             return items.MaxItem(a => -value(a));
         }

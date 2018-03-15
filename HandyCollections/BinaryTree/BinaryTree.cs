@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace HandyCollections.BinaryTree
 {
     /// <summary>
     /// A Binary search tree with support for tree rotations
     /// </summary>
-    /// <typeparam name="K">Type of keys</typeparam>
-    /// <typeparam name="V">Type of values</typeparam>
-    public class BinaryTree<K, V>
+    /// <typeparam name="TK">Type of keys</typeparam>
+    /// <typeparam name="TV">Type of values</typeparam>
+    public class BinaryTree<TK, TV>
     {
         #region fields and properties
         /// <summary>
@@ -20,19 +21,7 @@ namespace HandyCollections.BinaryTree
             private set;
         }
 
-        private readonly IComparer<K> _comparer;
-        /// <summary>
-        /// The comparer to use for items in this collection. Changing this comparer will trigger a heapify operation
-        /// </summary>
-// ReSharper disable MemberCanBePrivate.Global
-        public IComparer<K> Comparer
-// ReSharper restore MemberCanBePrivate.Global
-        {
-            get
-            {
-                return _comparer;
-            }
-        }
+        public IComparer<TK> Comparer { get; }
         #endregion
 
         #region constructors
@@ -40,7 +29,7 @@ namespace HandyCollections.BinaryTree
         /// 
         /// </summary>
         public BinaryTree()
-            :this(Comparer<K>.Default)
+            :this(Comparer<TK>.Default)
         {
 
         }
@@ -49,11 +38,9 @@ namespace HandyCollections.BinaryTree
         /// 
         /// </summary>
         /// <param name="comparer"></param>
-// ReSharper disable MemberCanBePrivate.Global
-        public BinaryTree(IComparer<K> comparer)
-// ReSharper restore MemberCanBePrivate.Global
+        public BinaryTree([NotNull] IComparer<TK> comparer)
         {
-            _comparer = comparer;
+            Comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
         }
         #endregion
 
@@ -65,12 +52,11 @@ namespace HandyCollections.BinaryTree
         /// <param name="value"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public virtual Node Add(K key, V value)
+        [NotNull] public virtual Node Add(TK key, TV value)
         {
-            Node n = CreateNode(key, value);
+            var n = CreateNode(key, value);
 
-            bool duplicate;
-            var v = FindParent(n.Key, out duplicate);
+            var v = FindParent(n.Key, out var duplicate);
 
             if (duplicate)
                 throw new ArgumentException("Duplicate keys not allowed");
@@ -88,9 +74,13 @@ namespace HandyCollections.BinaryTree
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public V Remove(K key)
+        [CanBeNull] public TV Remove(TK key)
         {
+            var node = FindParent(key, out var duplicate);
+
+            if (!duplicate)
+                return default(TV);
+
             throw new NotImplementedException();
         }
         #endregion
@@ -103,10 +93,10 @@ namespace HandyCollections.BinaryTree
         /// <param name="key"></param>
         /// <param name="duplicate">indicates if a node with the same key was located</param>
         /// <returns></returns>
-        private KeyValuePair<Node, bool> FindParent(K key, out bool duplicate)
+        private KeyValuePair<Node, bool> FindParent(TK key, out bool duplicate)
         {
             duplicate = false;
-            Node r = Root;
+            var r = Root;
 
             if (r == null)
                 return new KeyValuePair<Node, bool>(null, false);
@@ -142,10 +132,9 @@ namespace HandyCollections.BinaryTree
         /// <returns></returns>
         /// <exception cref="KeyNotFoundException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public virtual Node Find(K key)
+        public virtual Node Find(TK key)
         {
-            bool duplicate;
-            var v = FindParent(key, out duplicate);
+            var v = FindParent(key, out var duplicate);
 
             if (!duplicate)
                 throw new KeyNotFoundException("No such key in this tree");
@@ -161,14 +150,14 @@ namespace HandyCollections.BinaryTree
         /// <remarks>http://webdocs.cs.ualberta.ca/~holte/T26/tree-rotation.html</remarks>
         /// <param name="pivot"></param>
         /// <param name="rotateRight"></param>
-        public void Rotate(Node pivot, bool rotateRight)
+        public void Rotate([NotNull] Node pivot, bool rotateRight)
         {
-            Node pivotParent = pivot.Parent;
-            bool parentLeftSide = pivotParent == null || ReferenceEquals(pivotParent.Left, pivot);
+            var pivotParent = pivot.Parent;
+            var parentLeftSide = pivotParent == null || ReferenceEquals(pivotParent.Left, pivot);
 
-            Node rotator = rotateRight ? pivot.Left : pivot.Right;
+            var rotator = rotateRight ? pivot.Left : pivot.Right;
             //Node otherSubtree = rotateRight ? pivot.Right : pivot.Left;
-            Node insideSubtree = rotator == null ? null : rotateRight ? rotator.Right : rotator.Left;
+            var insideSubtree = rotator == null ? null : rotateRight ? rotator.Right : rotator.Left;
             //Node outsideSubtree = rotator == null ? null : rotateRight ? rotator.Left : rotator.Right;
 
             SetChild(pivot, null, rotateRight);
@@ -190,23 +179,25 @@ namespace HandyCollections.BinaryTree
         #endregion
 
         #region helpers
-        private bool IsLessThan(K a, K b)
+        private bool IsLessThan(TK a, TK b)
         {
             return Comparer.Compare(a, b) < 0;
         }
 
-        private bool IsEqual(K a, K b)
+        private bool IsEqual(TK a, TK b)
         {
             return Comparer.Compare(a, b) == 0;
         }
 
-        private static Node CreateNode(K key, V value)
+        [NotNull] private static Node CreateNode(TK key, TV value)
         {
             return new Node(key, value);
         }
 
-        private static void SetChild(Node parent, Node child, bool left)
+        private static void SetChild([NotNull] Node parent, [CanBeNull] Node child, bool left)
         {
+            if (parent == null) throw new ArgumentNullException(nameof(parent));
+
             if (left)
                 parent.Left = child;
             else
@@ -222,12 +213,12 @@ namespace HandyCollections.BinaryTree
             /// <summary>
             /// The key of this node
             /// </summary>
-            public readonly K Key;
+            public readonly TK Key;
             /// <summary>
             /// The value of this node
             /// </summary>
 // ReSharper disable MemberCanBePrivate.Global
-            public readonly V Value;
+            public readonly TV Value;
 // ReSharper restore MemberCanBePrivate.Global
 
             private Node _parent;
@@ -237,10 +228,7 @@ namespace HandyCollections.BinaryTree
             /// <exception cref="InvalidOperationException"></exception>
             public Node Parent
             {
-                get
-                {
-                    return _parent;
-                }
+                get => _parent;
                 private set
                 {
                     if (_parent != null)
@@ -265,14 +253,8 @@ namespace HandyCollections.BinaryTree
             /// </summary>
             public Node Left
             {
-                get
-                {
-                    return _left;
-                }
-                protected internal set
-                {
-                    SetChild(value, ref _left);
-                }
+                get => _left;
+                protected internal set => SetChild(value, ref _left);
             }
 
             private Node _right;
@@ -281,19 +263,13 @@ namespace HandyCollections.BinaryTree
             /// </summary>
             public Node Right
             {
-                get
-                {
-                    return _right;
-                }
-                protected internal set
-                {
-                    SetChild(value, ref _right);
-                }
+                get => _right;
+                protected internal set => SetChild(value, ref _right);
             }
 
-            private void SetChild(Node value, ref Node field)
+            private void SetChild([CanBeNull] Node value, [CanBeNull] ref Node field)
             {
-                if (value != null && value.Parent != null)
+                if (value?.Parent != null)
                     throw new ArgumentException("Parent must be null");
 
                 if (field != null)
@@ -308,13 +284,7 @@ namespace HandyCollections.BinaryTree
             /// <summary>
             /// Indicates if this is the root node of the tree
             /// </summary>
-            public bool IsRoot
-            {
-                get
-                {
-                    return Parent == null;
-                }
-            }
+            public bool IsRoot => Parent == null;
 
             /// <summary>
             /// Indicates if this is the left child of it's parent
@@ -347,7 +317,7 @@ namespace HandyCollections.BinaryTree
             /// </summary>
             /// <param name="key"></param>
             /// <param name="value"></param>
-            protected internal Node(K key, V value)
+            protected internal Node(TK key, TV value)
             {
                 Key = key;
                 Value = value;
@@ -359,7 +329,7 @@ namespace HandyCollections.BinaryTree
             /// <returns></returns>
             public override string ToString()
             {
-                return "Node " + new KeyValuePair<K, V>(Key, Value).ToString();
+                return "Node " + new KeyValuePair<TK, TV>(Key, Value);
             }
         }
     }
