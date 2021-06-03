@@ -29,8 +29,7 @@ namespace HandyCollections.Geometry
         /// <returns></returns>
         protected override bool Contains(BoundingBox container, ref BoundingBox contained)
         {
-            ContainmentType result;
-            container.Contains(ref contained, out result);
+            container.Contains(ref contained, out var result);
             return result == ContainmentType.Contains;
         }
 
@@ -42,8 +41,7 @@ namespace HandyCollections.Geometry
         /// <returns></returns>
         protected override bool Intersects(BoundingBox a, ref BoundingBox b)
         {
-            bool result;
-            a.Intersects(ref b, out result);
+            a.Intersects(ref b, out var result);
             return result;
         }
 

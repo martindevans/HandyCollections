@@ -34,13 +34,7 @@ namespace HandyCollections.BloomFilter
         /// Gets the current false positive rate.
         /// </summary>
         /// <value>The false positive rate.</value>
-        public double FalsePositiveRate
-        {
-            get
-            {
-                return BloomFilter<T>.CalculateFalsePositiveRate(_keyCount, Array.Length, Count);
-            }
-        }
+        public double FalsePositiveRate => BloomFilter<T>.CalculateFalsePositiveRate(_keyCount, Array.Length, Count);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BloomFilter&lt;T&gt;"/> class.

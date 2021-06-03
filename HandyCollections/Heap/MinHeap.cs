@@ -113,7 +113,7 @@ namespace HandyCollections.Heap
         /// Add a large number of items to the heap. This is more efficient that simply calling add on each item individually
         /// </summary>
         /// <param name="items"></param>
-        public void Add([NotNull] IEnumerable<T> items)
+        public void Add(IEnumerable<T> items)
         {
             if (items == null)
                 throw new ArgumentNullException(nameof(items));
@@ -181,7 +181,7 @@ namespace HandyCollections.Heap
             var removed = _heap[index];
 
             //Move the last item into the first position
-            _heap[index] = _heap[_heap.Count - 1];
+            _heap[index] = _heap[^1];
             _heap.RemoveAt(_heap.Count - 1);
 
             if (_heap.Count > 0 && index < _heap.Count)
@@ -318,7 +318,7 @@ namespace HandyCollections.Heap
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public int IndexOf([NotNull] Predicate<T> predicate)
+        public int IndexOf(Predicate<T> predicate)
         {
             return _heap.FindIndex(predicate);
         }

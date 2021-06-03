@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace HandyCollections.Extensions
@@ -7,9 +6,7 @@ namespace HandyCollections.Extensions
     /// <summary>
     /// A set of extensions to the IList interface
     /// </summary>
-// ReSharper disable InconsistentNaming
     public static class IListExtensions
-// ReSharper restore InconsistentNaming
     {
         /// <summary>
         /// Selects the index of the item from the list which would be in the given position if the list were sorted, using the default comparer.
@@ -97,7 +94,7 @@ namespace HandyCollections.Extensions
                 if (comparer.Compare(list[i], pivotValue) < 0)
                 {
                     list.Swap(i, storeIndex);
-                    storeIndex = storeIndex + 1;
+                    storeIndex++;
                 }
             }
             list.Swap(storeIndex, right);

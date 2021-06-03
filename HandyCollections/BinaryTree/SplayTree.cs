@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 
 namespace HandyCollections.BinaryTree
 {
@@ -39,7 +40,7 @@ namespace HandyCollections.BinaryTree
         {
             while (n != Root)
             {
-                if (n.Parent.IsRoot)
+                if (n.Parent!.IsRoot)
                 {
                     Zig(n);
                 }
@@ -55,18 +56,24 @@ namespace HandyCollections.BinaryTree
             return n;
         }
 
-        private void Zig([NotNull] Node x)
+        private void Zig(Node x)
         {
+            if (x.Parent == null)
+                throw new InvalidOperationException("Cannot `Zig` root node");
+
             Rotate(x.Parent, x.IsLeftChild);
         }
 
-        private void ZigZig([NotNull] Node n)
+        private void ZigZig(Node n)
         {
+            if (n.Parent == null)
+                throw new InvalidOperationException("Cannot `ZigZig` root node");
+
             Zig(n.Parent);
             Zig(n);
         }
 
-        private void ZigZag([NotNull] Node n)
+        private void ZigZag(Node n)
         {
             Zig(n);
             Zig(n);

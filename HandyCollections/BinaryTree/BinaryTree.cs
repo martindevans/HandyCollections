@@ -15,7 +15,7 @@ namespace HandyCollections.BinaryTree
         /// <summary>
         /// Gets the root of this tree
         /// </summary>
-        public Node Root
+        public Node? Root
         {
             get;
             private set;
@@ -56,15 +56,15 @@ namespace HandyCollections.BinaryTree
         {
             var n = CreateNode(key, value);
 
-            var v = FindParent(n.Key, out var duplicate);
+            var (node, b) = FindParent(n.Key, out var duplicate);
 
             if (duplicate)
                 throw new ArgumentException("Duplicate keys not allowed");
 
-            if (v.Key == null)
+            if (node == null)
                 return (Root = n);
 
-            SetChild(v.Key, n, v.Value);
+            SetChild(node, n, b);
 
             return n;
         }
@@ -74,12 +74,12 @@ namespace HandyCollections.BinaryTree
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        [CanBeNull] public TV Remove(TK key)
+        public TV? Remove(TK key)
         {
             var node = FindParent(key, out var duplicate);
 
             if (!duplicate)
-                return default(TV);
+                return default;
 
             throw new NotImplementedException();
         }
@@ -93,32 +93,32 @@ namespace HandyCollections.BinaryTree
         /// <param name="key"></param>
         /// <param name="duplicate">indicates if a node with the same key was located</param>
         /// <returns></returns>
-        private KeyValuePair<Node, bool> FindParent(TK key, out bool duplicate)
+        private (Node?, bool) FindParent(TK key, out bool duplicate)
         {
             duplicate = false;
             var r = Root;
 
             if (r == null)
-                return new KeyValuePair<Node, bool>(null, false);
+                return (null, false);
 
             while (true)
             {
                 if (IsLessThan(key, r.Key))
                 {
                     if (r.Left == null)
-                        return new KeyValuePair<Node, bool>(r, true);
+                        return (r, true);
 
                     r = r.Left;
                 }
                 else if (IsEqual(key, r.Key))
                 {
                     duplicate = true;
-                    return new KeyValuePair<Node, bool>(r, false);
+                    return (r, false);
                 }
                 else
                 {
                     if (r.Right == null)
-                        return new KeyValuePair<Node, bool>(r, false);
+                        return (r, false);
 
                     r = r.Right;
                 }
@@ -139,7 +139,7 @@ namespace HandyCollections.BinaryTree
             if (!duplicate)
                 throw new KeyNotFoundException("No such key in this tree");
 
-            return v.Key;
+            return v.Item1!;
         }
         #endregion
 
@@ -189,12 +189,12 @@ namespace HandyCollections.BinaryTree
             return Comparer.Compare(a, b) == 0;
         }
 
-        [NotNull] private static Node CreateNode(TK key, TV value)
+        private static Node CreateNode(TK key, TV value)
         {
             return new Node(key, value);
         }
 
-        private static void SetChild([NotNull] Node parent, [CanBeNull] Node child, bool left)
+        private static void SetChild(Node parent, Node? child, bool left)
         {
             if (parent == null) throw new ArgumentNullException(nameof(parent));
 
@@ -221,12 +221,12 @@ namespace HandyCollections.BinaryTree
             public readonly TV Value;
 // ReSharper restore MemberCanBePrivate.Global
 
-            private Node _parent;
+            private Node? _parent;
             /// <summary>
             /// Gets the parent element of this node
             /// </summary>
             /// <exception cref="InvalidOperationException"></exception>
-            public Node Parent
+            public Node? Parent
             {
                 get => _parent;
                 private set
@@ -247,27 +247,27 @@ namespace HandyCollections.BinaryTree
                 }
             }
 
-            private Node _left;
+            private Node? _left;
             /// <summary>
             /// Gets the left child of this node
             /// </summary>
-            public Node Left
+            public Node? Left
             {
                 get => _left;
                 protected internal set => SetChild(value, ref _left);
             }
 
-            private Node _right;
+            private Node? _right;
             /// <summary>
             /// Gets the right child of this node
             /// </summary>
-            public Node Right
+            public Node? Right
             {
                 get => _right;
                 protected internal set => SetChild(value, ref _right);
             }
 
-            private void SetChild([CanBeNull] Node value, [CanBeNull] ref Node field)
+            private void SetChild(Node? value, ref Node? field)
             {
                 if (value?.Parent != null)
                     throw new ArgumentException("Parent must be null");

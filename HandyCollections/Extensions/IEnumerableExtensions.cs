@@ -20,7 +20,7 @@ namespace HandyCollections.Extensions
         /// <param name="start">The start.</param>
         /// <param name="end">The end.</param>
         /// <returns></returns>
-        [Pure, Obsolete] public static IEnumerable<T> Append<T>([NotNull] this IEnumerable<T> start, [NotNull] IEnumerable<T> end)
+        [Pure, Obsolete] public static IEnumerable<T> Append<T>(this IEnumerable<T> start, IEnumerable<T> end)
         {
             if (start == null) throw new ArgumentNullException(nameof(start));
             if (end == null) throw new ArgumentNullException(nameof(end));
@@ -39,7 +39,7 @@ namespace HandyCollections.Extensions
         /// <param name="start">The start.</param>
         /// <param name="end">The end.</param>
         /// <returns></returns>
-        [Pure, NotNull] public static IEnumerable<T> Append<T>([NotNull] this IEnumerable<T> start, [NotNull] params T[] end)
+        [Pure] public static IEnumerable<T> Append<T>(this IEnumerable<T> start, params T[] end)
         {
             if (start == null) throw new ArgumentNullException(nameof(start));
             if (end == null) throw new ArgumentNullException(nameof(end));
@@ -55,7 +55,7 @@ namespace HandyCollections.Extensions
         /// <returns>
         /// 	<c>true</c> if the specified enumerable is empty; otherwise, <c>false</c>.
         /// </returns>
-        [Pure] public static bool IsEmpty<T>([NotNull] this IEnumerable<T> enumerable)
+        [Pure] public static bool IsEmpty<T>(this IEnumerable<T> enumerable)
         {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
 
@@ -69,7 +69,7 @@ namespace HandyCollections.Extensions
         /// <param name="items"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        [Pure, CanBeNull] public static T MaxItem<T>([NotNull] this IEnumerable<T> items, [NotNull] Func<T, float> value)
+        [Pure] public static T? MaxItem<T>([NotNull] this IEnumerable<T> items, Func<T, float> value)
         {
             if (items == null) throw new ArgumentNullException(nameof(items));
             if (value == null) throw new ArgumentNullException(nameof(value));
@@ -97,7 +97,7 @@ namespace HandyCollections.Extensions
         /// <param name="items"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        [Pure, CanBeNull] public static T MinItem<T>([NotNull] this IEnumerable<T> items, [NotNull] Func<T, float> value)
+        [Pure] public static T? MinItem<T>(this IEnumerable<T> items, Func<T, float> value)
         {
             if (items == null) throw new ArgumentNullException(nameof(items));
             if (value == null) throw new ArgumentNullException(nameof(value));
@@ -115,7 +115,7 @@ namespace HandyCollections.Extensions
         public static IMinHeap<KeyValuePair<float, T>> ToMinHeap<T>(this IEnumerable<T> items, Func<T, float> key)
         {
             //Create a heap which order on the key of a KVP
-            IMinHeap<KeyValuePair<float, T>> heap = new MinHeap<KeyValuePair<float, T>>((a, b) => a.Key.CompareTo(b.Key));
+            MinHeap<KeyValuePair<float, T>> heap = new((a, b) => a.Key.CompareTo(b.Key));
 
             //Add all the items in bulk
             heap.Add(items.Select(item => new KeyValuePair<float, T>(key(item), item)));

@@ -17,10 +17,7 @@ namespace HandyCollections.BloomFilter
         /// <summary>
         /// The amount of space this filter is using (in bytes)
         /// </summary>
-        public int Size
-        {
-            get { return _array.Length * 8; }
-        }
+        public int Size => _array.Length * 8;
 
         /// <summary>
         /// The number of keys generated for a given item
@@ -41,10 +38,7 @@ namespace HandyCollections.BloomFilter
         /// Gets the current false positive rate.
         /// </summary>
         /// <value>The false positive rate.</value>
-        public double FalsePositiveRate
-        {
-            get { return CalculateFalsePositiveRate(_keyCount, _array.Count, Count); }
-        }
+        public double FalsePositiveRate => CalculateFalsePositiveRate(_keyCount, _array.Count, Count);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BloomFilter&lt;T&gt;"/> class.
@@ -64,8 +58,8 @@ namespace HandyCollections.BloomFilter
         /// <param name="targetFalsePositiveRate">The target positive rate.</param>
         public BloomFilter(int estimatedsize, double targetFalsePositiveRate)
         {
-            int size = (int)Math.Ceiling(-(estimatedsize * Math.Log(targetFalsePositiveRate)) / 0.480453014f);
-            int keys = (int)(0.7f * size / estimatedsize);
+            var size = (int)Math.Ceiling(-(estimatedsize * Math.Log(targetFalsePositiveRate)) / 0.480453014f);
+            var keys = (int)(0.7f * size / estimatedsize);
             _array = new BitArray(size, false);
             _keyCount = keys;
         }
@@ -77,14 +71,17 @@ namespace HandyCollections.BloomFilter
         /// <returns>Returns true if this item was already in the set</returns>
         public bool Add(T item)
         {
+            if (item is null)
+                throw new ArgumentNullException(nameof(item));
+
             Count++;
 
-            bool b = true;
-            int hash = item.GetHashCode();
-            for (int i = 0; i < _keyCount; i++)
+            var b = true;
+            var hash = item.GetHashCode();
+            for (var i = 0; i < _keyCount; i++)
             {
                 hash++;
-                int ik = GetIndex(hash, _array.Length);
+                var ik = GetIndex(hash, _array.Length);
                 if (!_array.Get(ik))
                 {
                     b = false;
@@ -113,8 +110,11 @@ namespace HandyCollections.BloomFilter
         /// </returns>
         public bool Contains(T item)
         {
-            int hash = item.GetHashCode();
-            for (int i = 0; i < _keyCount; i++)
+            if (item is null)
+                return false;
+
+            var hash = item.GetHashCode();
+            for (var i = 0; i < _keyCount; i++)
             {
                 hash++;
                 if (!_array.Get(GetIndex(hash, _array.Length)))
@@ -124,9 +124,9 @@ namespace HandyCollections.BloomFilter
         }
 
         #region static helpers
-        internal static unsafe int GetIndex(int hash, int arrayLength)
+        internal static int GetIndex(int hash, int arrayLength)
         {
-            uint k = StaticRandomNumber.Random(*((uint*)&hash), (uint)arrayLength);
+            var k = StaticRandomNumber.Random(unchecked((uint)hash), (uint)arrayLength);
             return (int)k;
         }
 
@@ -142,7 +142,7 @@ namespace HandyCollections.BloomFilter
         /// <returns></returns>
         public static int SystemHash(T a)
         {
-            return a.GetHashCode();
+            return a?.GetHashCode() ?? 0;
         }
         #endregion
     }

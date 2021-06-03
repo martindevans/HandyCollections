@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace HandyCollections.BloomFilter
+﻿namespace HandyCollections.BloomFilter
 {
     /// <summary>
     /// A probabalistic data set, which may return false positives but never false negatives

@@ -14,7 +14,7 @@ namespace HandyCollections.Set
         private uint _next = 0;
         private readonly Dictionary<T, uint> _items;
 
-        private IEnumerable<T> _enumerable; 
+        private readonly IEnumerable<T> _enumerable; 
         #endregion
 
         #region constructor

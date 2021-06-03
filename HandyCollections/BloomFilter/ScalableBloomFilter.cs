@@ -11,12 +11,12 @@ namespace HandyCollections.BloomFilter
         :IBloomFilter<T>
     {
         private readonly int _initialCapacity;
-        private const double SCALE = 3;     //The constant scaling rate. Larger will query faster but consume memory faster
+        private const double Scale = 3;     //The constant scaling rate. Larger will query faster but consume memory faster
         private readonly double _ratio;
         private readonly double _falsePositiveProbability;
 
         private int _lastSlice = -1;
-        private readonly List<BloomFilterSlice<T>> _slices = new List<BloomFilterSlice<T>>();
+        private readonly List<BloomFilterSlice<T>> _slices = new();
 
         /// <summary>
         /// Gets the number of items in this filter
@@ -94,7 +94,7 @@ namespace HandyCollections.BloomFilter
             _lastSlice++;
             if (_lastSlice >= _slices.Count)
             {
-                _slices.Add(new BloomFilterSlice<T>((int) (_initialCapacity * Math.Pow(SCALE, _slices.Count)), _falsePositiveProbability * Math.Pow(_ratio, _slices.Count)));
+                _slices.Add(new BloomFilterSlice<T>((int) (_initialCapacity * Math.Pow(Scale, _slices.Count)), _falsePositiveProbability * Math.Pow(_ratio, _slices.Count)));
                 _lastSlice = _slices.Count - 1;
             }
         }

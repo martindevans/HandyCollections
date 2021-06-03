@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace HandyCollections.BloomFilter
+﻿namespace HandyCollections.BloomFilter
 {
     class BloomFilterSlice<T>
         :IBloomFilter<T>
@@ -11,15 +6,9 @@ namespace HandyCollections.BloomFilter
         private readonly BloomFilter<T> _filter;
         private readonly int _capacity;
 
-        public int Count
-        {
-            get { return _filter.Count; }
-        }
+        public int Count => _filter.Count;
 
-        public int SizeInBytes
-        {
-            get { return _filter.Size; }
-        }
+        public int SizeInBytes => _filter.Size;
 
         public BloomFilterSlice(int capacity, double falsePositiveProbability)
         {

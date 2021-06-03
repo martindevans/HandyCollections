@@ -10,7 +10,7 @@ namespace HandyCollections
     public class RecentlyUsedQueue<T>
         :IEnumerable<T>
     {
-        [NotNull] private readonly LinkedList<T> _list = new LinkedList<T>();
+        [NotNull] private readonly LinkedList<T> _list = new();
 
         /// <summary>
         /// Gets the count.

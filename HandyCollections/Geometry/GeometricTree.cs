@@ -146,9 +146,9 @@ namespace HandyCollections.Geometry
         #region helper types
         private class Node
         {
-            public readonly List<Member> Items = new List<Member>();
+            public readonly List<Member> Items = new();
             public readonly TBound Bounds;
-            public Node[] Children;
+            public Node[]? Children;
 
             private readonly int _depth;
             private readonly int _maxDepth;
@@ -225,7 +225,7 @@ namespace HandyCollections.Geometry
                 while (nodes.Count > 0)
                 {
                     //Remove node
-                    var n = nodes[nodes.Count - 1];
+                    var n = nodes[^1];
                     nodes.RemoveAt(nodes.Count - 1);
 
                     //Skip nodes we do not intersect (unless this is the root, in which case we always want to check it)
@@ -247,7 +247,7 @@ namespace HandyCollections.Geometry
 
             public int Remove(TBound bounds, TItem item)
             {
-                var pred = new Predicate<Member>(a => a.Value.Equals(item));
+                var pred = new Predicate<Member>(a => a.Value!.Equals(item));
 
                 return RemoveRecursive(bounds, pred, true);
             }
@@ -326,7 +326,7 @@ namespace HandyCollections.Geometry
             var nodes = new List<Node>() { _root };
             while (nodes.Count > 0)
             {
-                var n = nodes[nodes.Count - 1];
+                var n = nodes[^1];
                 nodes.RemoveAt(nodes.Count - 1);
                 if (n == null)
                     continue;
